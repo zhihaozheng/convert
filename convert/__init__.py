@@ -26,10 +26,14 @@ def main(ctx, parallel):
 @click.argument("source")
 @click.argument("destination")
 @click.pass_context
-def to_tif(ctx, source, destination):
+def totif(ctx, source, destination):
     tile_path = os.path.join(source,"subtiles")
 
-    progress_dir = mkdir(os.path.join(tile_path, 'progress_tif'))
+    target_path = os.path.join(destination, souce.split("/")[-1])
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
+
+    progress_dir = mkdir(os.path.join(target_path, 'progress_tif'))
 
     done_files = set(os.listdir(progress_dir))
 
@@ -43,9 +47,7 @@ def to_tif(ctx, source, destination):
     to_cv = list(all_files.difference(done_files))
     to_cv.sort()
 
-    target_path = os.path.join(destination, souce.split("/")[-1])
-    if not os.path.exists(target_path):
-        os.makedirs(target_path)
+
 
     def process(filename):
         img = cv2.imread(os.path.join(tile_path,filename),cv2.IMREAD_GRAYSCALE)
@@ -64,7 +66,7 @@ def to_tif(ctx, source, destination):
 @click.argument("source")
 @click.argument("destination")
 @click.pass_context
-def download_to_tif(ctx, source, destination):
+def downloadtif(ctx, source, destination):
     """
     """
     cf = CloudFiles(source, progress=True)
