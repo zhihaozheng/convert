@@ -29,7 +29,7 @@ def main(ctx, parallel):
 def totif(ctx, source, destination):
     tile_path = os.path.join(source,"subtiles")
 
-    target_path = os.path.join(destination, souce.split("/")[-1])
+    target_path = os.path.join(destination, source.split("/")[-1])
     if not os.path.exists(target_path):
         os.makedirs(target_path)
 
