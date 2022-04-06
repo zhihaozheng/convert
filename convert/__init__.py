@@ -70,8 +70,7 @@ def download_to_tif(ctx, source, destination):
     cf = CloudFiles(source, progress=True)
 
     all_files = set([
-        fname for fname in cf.list(prefix='abc123'):
-
+        fname for fname in cf.list(prefix='abc123')
         if split(fname)[1] == ".bmp"
         ])
     to_download = list(all_files)
