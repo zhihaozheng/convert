@@ -34,9 +34,7 @@ def totif(ctx, source, destination):
         os.makedirs(target_path)
 
     progress_dir = mkdir(os.path.join(target_path, 'progress_tif'))
-
     done_files = set(os.listdir(progress_dir))
-
     all_files = os.listdir(tile_path)
 
     all_files = set([
@@ -46,8 +44,6 @@ def totif(ctx, source, destination):
 
     to_cv = list(all_files.difference(done_files))
     to_cv.sort()
-
-
 
     def process(filename):
         img = cv2.imread(os.path.join(tile_path,filename),cv2.IMREAD_GRAYSCALE)
@@ -68,20 +64,26 @@ def totif(ctx, source, destination):
 @click.pass_context
 def downloadtif(ctx, source, destination):
     """
+    source:
     """
     cf = CloudFiles(source, progress=True)
 
     all_files = set([
-        fname for fname in cf.list(prefix='abc123')
-        if split(fname)[1] == ".bmp"
+        fname for fname in cf.list(prefix=source)
+        if ".bmp" in fname
         ])
-    to_download = list(all_files)
-    to_download.sort()
+
     if not os.path.exists(destination):
         os.makedirs(destination)
 
+    progress_dir = mkdir(os.path.join(destination, 'progress_tif'))
+    done_files = set(os.listdir(progress_dir))
+    to_download = list(all_files.difference(done_files))
+    to_download.sort()
+
     def process(filename):
-        img = cf.get(['file1', 'file2', 'file3', ..., 'fileN'])
+        img = cf.get(filename)
+        bmp = cv2.imdecode(np.frombuffer(img,dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
         cv2.imwrite(os.path.join(destination, f.replace("bmp","tif")), img)
         return 1
 
