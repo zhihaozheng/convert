@@ -84,7 +84,7 @@ def downloadtif(ctx, source, destination):
     def process(filename):
         img = cf.get(filename)
         bmp = cv2.imdecode(np.frombuffer(img,dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
-        cv2.imwrite(os.path.join(destination, filename.replace("bmp","tif")), img)
+        cv2.imwrite(os.path.join(destination, filename.replace("bmp","tif")), bmp)
         return 1
 
     parallel = int(ctx.obj.get("parallel", 1))
