@@ -69,7 +69,7 @@ def downloadtif(ctx, source, destination):
     cf = CloudFiles(source, progress=True)
 
     all_files = set([
-        fname for fname in cf.list(prefix=source, flat=True)
+        fname for fname in cf.list(prefix="tile_", flat=True)
         if ".bmp" in fname
         ])
 
@@ -84,7 +84,7 @@ def downloadtif(ctx, source, destination):
     def process(filename):
         img = cf.get(filename)
         bmp = cv2.imdecode(np.frombuffer(img,dtype=np.uint8), cv2.IMREAD_GRAYSCALE)
-        cv2.imwrite(os.path.join(destination, f.replace("bmp","tif")), img)
+        cv2.imwrite(os.path.join(destination, filename.replace("bmp","tif")), img)
         return 1
 
     parallel = int(ctx.obj.get("parallel", 1))
