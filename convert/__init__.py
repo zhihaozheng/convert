@@ -69,7 +69,7 @@ def downloadtif(ctx, source, destination):
     cf = CloudFiles(source, progress=True)
 
     all_files = set([
-        fname for fname in cf.list(prefix=source)
+        fname for fname in cf.list(prefix=source, flat=True)
         if ".bmp" in fname
         ])
 
