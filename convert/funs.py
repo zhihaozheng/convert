@@ -3,6 +3,7 @@ import os
 import re
 import numpy as np
 import networkx as nx
+import matplotlib.pyplot as plt
 
 def get_pair_list(subt):
     pair_list = []
@@ -160,7 +161,6 @@ def ls(t1,t2=4): return list(range(t1,t1+t2))
 
 def get_ls(initials,step=4): return [item for j in [ls(i,step) for i in initials] for item in j]
 
-import matplotlib.pyplot as plt
 
 def plot_stage_positions(pos_path,save_path,acq_label):
     pos = pd.read_csv(pos_path, header=0, skipinitialspace=True)
