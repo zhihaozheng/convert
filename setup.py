@@ -8,7 +8,7 @@ setuptools.setup(
   include_package_data=True,
   entry_points={
     "console_scripts": [
-      "convert=convert:main"
+      "temu=temu:main"
     ],
   },
   pbr=True
