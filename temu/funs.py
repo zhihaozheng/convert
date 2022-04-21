@@ -66,12 +66,13 @@ def get_region(path="/home/voxa/Documents/zhihao/211228-small_stack_stitch/align
     y1 = int((hei - nums[1])//2 + nums[3])
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
-def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core"):
+def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85):
     '''
+    # 220421 get_good_pairs change to picking high corr ones from summary_f
     acq_label: label for the section that will be attached to the pair list name
     summary_f: path to the summary stats after register
     tile_path: path to the tiles that will be stitched
-    pos_path: path to the stage_position.csv (stage_positions.csv)
+    xxx pos_path: path to the stage_position.csv (stage_positions.csv)
     save_path: path to where the pair_list and image_list will save to
     exclude: tiles to be excluded and any tile connected to it will be excluded either
     '''
@@ -86,24 +87,25 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
 
     # read the table with correlation numbers
     summary = pd.read_csv(summary_f, header=1,sep=" ",nrows=line_number-4, skipinitialspace=True)
-    lowcorr = summary.query("CORRELATION<0.85")[["IMAGE","REFERENCE"]]
-    lowcorr_pairs = [set(lowcorr.iloc[i]) for i in range(len(lowcorr))]
+
+    highcorr = summary.query("CORRELATION>@corr_threshold")[["IMAGE","REFERENCE"]]
+    # lowcorr = summary.query("CORRELATION<0.85")[["IMAGE","REFERENCE"]]
+    highcorr_pairs = [set(highcorr.iloc[i]) for i in range(len(highcorr))]
     align_pair_list = []
     align_image_list = []
 
-    # pos_path = os.path.join(data_path,acq_name,"metadata","stage_positions.csv")
+    pos_path = os.path.join(data_path,acq_name,"metadata","stage_positions.csv")
     subt = get_subtile_loc(pos_path, tile_path)
     pair_list = get_pair_list(subt)
     for pair in pair_list:
         ps = set(pair.split(" ")[:2])
         ps_list = list(ps)
-        if ps in lowcorr_pairs:
-            continue
-        elif len(exclude)>0 and (ps_list[0] in exclude or ps_list[1] in exclude):
-            continue
-        else:
-            align_pair_list.append(pair)
-            align_image_list.extend(ps_list)
+        if ps in highcorr_pairs:
+            if len(exclude)>0 and (ps_list[0] in exclude or ps_list[1] in exclude):
+                continue
+            else:
+                align_pair_list.append(pair)
+                align_image_list.extend(ps_list)
     align_image_list = list(set(align_image_list))
 
     G = nx.parse_edgelist([i[:23] for i in align_pair_list])
@@ -116,7 +118,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
         f.write("\n".join(core_align_pairs))
     with open(os.path.join(save_path,acq_label + "_" + fname + "_images.lst"),"w") as f:
         f.write("\n".join(core_images))
-    print("pairs_images_lst saved")
+    print("pairs_images_lst saved for " + acq_label)
 
 def get_pairs(acq_label,tile_path,pos_path,save_path):
     '''
