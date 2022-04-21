@@ -94,7 +94,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
     align_pair_list = []
     align_image_list = []
 
-    pos_path = os.path.join(data_path,acq_name,"metadata","stage_positions.csv")
+    # pos_path = os.path.join(data_path,acq_name,"metadata","stage_positions.csv")
     subt = get_subtile_loc(pos_path, tile_path)
     pair_list = get_pair_list(subt)
     for pair in pair_list:
