@@ -10,6 +10,8 @@ from tqdm import tqdm
 from cloudfiles import CloudFiles
 from cloudvolume.lib import mkdir, touch
 
+from temu.funs import get_pairs
+
 @click.group()
 @click.option("-p", "--parallel", default=1, help="Run with this number of parallel processes. If 0, use number of cores.")
 @click.pass_context
@@ -93,3 +95,17 @@ def downloadtif(ctx, source, destination):
         with pathos.pools.ProcessPool(parallel) as pool:
             for num_inserted in pool.imap(process, to_download):
                 pbar.update(num_inserted)
+
+@click.command()
+@click.argument("acq_path")
+@click.argument("tile_path")
+@click.argument("save_path")
+def getpairs(acq_path,tile_path,save_path):
+        """
+        acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
+        tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
+        save_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_maps/lst
+        """
+    pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
+    acq_label = acq_path.split("/")[-1].split("-")[0]
+    get_pairs(acq_label,tile_path,pos_path,save_path)
