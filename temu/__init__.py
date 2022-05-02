@@ -112,10 +112,11 @@ def getpairs(acq_path,tile_path,save_path):
 
 
 @click.command()
-@click.argument("acq_path")
+@click.argument("acq_label")
 @click.argument("tile_path")
+@click.argument("pos_path")
 @click.argument("save_path")
-def getgoodpairs(acq_path,tile_path,save_path):
+def getgoodpairs(acq_label,tile_path,pos_path,save_path):
     '''
     acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
@@ -132,8 +133,8 @@ def getgoodpairs(acq_path,tile_path,save_path):
     pos_path = "/media/voxa/WD_23/zhihao/ca3/tape3_blade2/211208/bladeseq-2021.12.07-23.46.41/s042-2021.12.07-23.46.41/metadata/stage_positions.csv"
     save_path = "/media/voxa/WD_36/zhihao/ca3/tape3_blade2_maps/lst/"
     '''
-    pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
-    acq_label = acq_path.split("/")[-1].split("-")[0]
+    # pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
+    # acq_label = acq_path.split("/")[-1].split("-")[0]
     summary_f=os.path.join(save_path,maps,acq_label,summary.out)
     lst_save_path = os.path.join(save_path,lst)
     get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85):
