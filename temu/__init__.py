@@ -96,7 +96,7 @@ def downloadtif(ctx, source, destination):
             for num_inserted in pool.imap(process, to_download):
                 pbar.update(num_inserted)
 
-@click.command()
+@main.command()
 @click.argument("acq_path")
 @click.argument("tile_path")
 @click.argument("save_path")
@@ -111,7 +111,7 @@ def getpairs(acq_path,tile_path,save_path):
     get_pairs(acq_label,tile_path,pos_path,save_path)
 
 
-@click.command()
+@main.command()
 @click.argument("acq_label")
 @click.argument("tile_path")
 @click.argument("pos_path")
