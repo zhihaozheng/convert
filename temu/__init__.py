@@ -10,7 +10,7 @@ from tqdm import tqdm
 from cloudfiles import CloudFiles
 from cloudvolume.lib import mkdir, touch
 
-from temu.funs import get_pairs
+from temu.funs import get_pairs,get_good_pairs
 
 @click.group()
 @click.option("-p", "--parallel", default=1, help="Run with this number of parallel processes. If 0, use number of cores.")
