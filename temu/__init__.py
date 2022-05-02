@@ -116,7 +116,8 @@ def getpairs(acq_path,tile_path,save_path):
 @click.argument("tile_path")
 @click.argument("pos_path")
 @click.argument("save_path")
-def getgoodpairs(acq_label,tile_path,pos_path,save_path):
+@click.option('--exclude', type=str, default="", help="path to a file containing a lst of tiles to exclude", show_default=True)
+def getgoodpairs(acq_label,tile_path,pos_path,save_path,exclude):
     '''
     acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
@@ -137,4 +138,10 @@ def getgoodpairs(acq_label,tile_path,pos_path,save_path):
     # acq_label = acq_path.split("/")[-1].split("-")[0]
     summary_f=os.path.join(save_path,"maps",acq_label,"summary.out")
     lst_save_path = os.path.join(save_path,"lst")
-    get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85)
+    if len(exclude)==0:
+        exclude=[]
+    else:
+        with open(exclude,"r") as f:
+            exclude=f.read().splitlines()
+
+    get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=0.85)
