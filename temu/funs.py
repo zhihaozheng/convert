@@ -130,9 +130,9 @@ def get_pairs(acq_label,tile_path,pos_path,save_path):
     subt = get_subtile_loc(pos_path, tile_path)
     pair_list = get_pair_list(subt)
 
-    with open(save_path + acq_label + "_pairs.lst","w") as f:
+    with open(os.path.join(save_path,acq_label + "_pairs.lst"),"w") as f:
         f.write("\n".join(pair_list))
-    with open(save_path + acq_label + "_images.lst","w") as f:
+    with open(os.path.join(save_path,acq_label + "_images.lst"),"w") as f:
         f.write("\n".join(subt.fname))
     print(acq_label + " is done")
 
