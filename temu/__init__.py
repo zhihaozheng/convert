@@ -137,4 +137,4 @@ def getgoodpairs(acq_label,tile_path,pos_path,save_path):
     # acq_label = acq_path.split("/")[-1].split("-")[0]
     summary_f=os.path.join(save_path,maps,acq_label,summary.out)
     lst_save_path = os.path.join(save_path,lst)
-    get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85):
+    get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85)
