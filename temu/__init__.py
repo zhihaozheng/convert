@@ -149,13 +149,17 @@ def getgoodpairs(acq_label,tile_path,pos_path,save_path,exclude):
 
 # example script: temu tk --img_dir --acq_label --output_dir get_tk --rst
 @main.group("tk")
-@click.argument('--img_dir', default="", required=True, help="directory to tif images, wo the last slash")
-@click.argument('--acq_label', default="", required=True, help="acq_label, e.g. s010")
-@click.argument('--output_dir', default="scripts.sh", help="directory where alignTK script will be saved to")
-def tkgroup(ctx,img_dir, acq_label, output_dir):
+@click.argument('--img_dir', default="", required=True)
+@click.argument('--acq_label', default="", required=True)
+@click.argument('--output_dir', default="scripts.sh", required=True)
+def tkgroup(ctx, img_dir, acq_label, output_dir):
   """
   produce alignTK script to run stitching
-  --img_dir : /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s106-2021.12.22-14.51.58
+--img_dir : directory to tif images, wo the last slash
+        e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s106-2021.12.22-14.51.58
+
+--acq_label: "acq_label, e.g. s010"
+--output_dir: "directory where alignTK script will be saved to"
 
   """
   ctx.ensure_object(dict)
@@ -168,9 +172,12 @@ def tkgroup(ctx,img_dir, acq_label, output_dir):
 @click.option('--register', default=False, is_flag=True, help="")
 @click.option('--align', default=False, is_flag=True, help="")
 @click.option('--imap', default=False, is_flag=True, help="")
-@click.argument('--apply_map_red', default=None, type=str, help="output path, will append acq_label subdir")
+@click.argument('--apply_map_red', default=None, type=str)
 @click.pass_context
 def get_script(ctx, rst, register, align, imap, apply_map_red):
+    '''
+    --apply_map_red: "output path, will append acq_label subdir"
+    '''
     img_dir = ctx.object.get("img_dir")
     acq = ctx.object.get("acq_label")
     output_dir = ctx.object.get("output_dir")
