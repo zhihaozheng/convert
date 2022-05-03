@@ -151,10 +151,12 @@ def getgoodpairs(acq_label,tile_path,pos_path,save_path,exclude):
 @main.group("tk")
 @click.argument('--img_dir', default="", required=True, help="directory to tif images, wo the last slash")
 @click.argument('--acq_label', default="", required=True, help="acq_label, e.g. s010")
-@click.argument('--output_dir', default="scripts", help="directory where alignTK script will be saved to")
+@click.argument('--output_dir', default="scripts.sh", help="directory where alignTK script will be saved to")
 def tkgroup(ctx,img_dir, acq_label, output_dir):
   """
   produce alignTK script to run stitching
+  --img_dir : /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s106-2021.12.22-14.51.58
+
   """
   ctx.ensure_object(dict)
   ctx.obj["img_dir"] = img_dir
@@ -167,9 +169,8 @@ def tkgroup(ctx,img_dir, acq_label, output_dir):
 @click.option('--align', default=False, is_flag=True, help="")
 @click.option('--imap', default=False, is_flag=True, help="")
 @click.argument('--apply_map_red', default=None, type=str, help="output path, will append acq_label subdir")
-@click.argument('--apply_map_fullres', default=None, type=str, help="")
 @click.pass_context
-def get_tk(ctx,):
+def get_script(ctx, rst, register, align, imap, apply_map_red):
     img_dir = ctx.object.get("img_dir")
     acq = ctx.object.get("acq_label")
     output_dir = ctx.object.get("output_dir")
