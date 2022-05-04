@@ -97,18 +97,17 @@ def downloadtif(ctx, source, destination):
                 pbar.update(num_inserted)
 
 @main.command()
-@click.argument("acq_path")
-@click.argument("tile_path")
+@click.argument("acq")
+@click.argument("img")
+@click.argument("pos_path")
 @click.argument("save_path")
-def getpairs(acq_path,tile_path,save_path):
+def getpairs(acq,img,pos_path,save_path):
     """
-    acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
+    pos_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36/metadata/stage_positions.csv
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
     save_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_maps/lst
     """
-    pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
-    acq_label = acq_path.split("/")[-1].split("-")[0]
-    get_pairs(acq_label,tile_path,pos_path,save_path)
+    get_pairs(acq,img,pos_path,save_path)
 
 @main.command()
 @click.argument("acq")
@@ -146,7 +145,7 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
 
     get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=0.85)
 
-# example script: temu get_script --img --acq --output --rst
+# example script: temu getscript --img --acq --output --rst
 @main.command()
 @click.option('--img', default="", required=True)
 @click.option('--acq', default="", required=True, help="acq, e.g. s010")
@@ -158,7 +157,8 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
 @click.option('--apply_map_red', default=None, type=str)
 @click.option('--apply_map_hres', default=None, help="apply_map_dir")
 @click.option('--size', default=None, help="used for apply_map_hres only")
-def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size):
+@click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
+def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi):
     '''
     --apply_map_red: "output path, will append acq subdir"
       produce alignTK script to run stitching
@@ -171,11 +171,11 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
     txt_lst = []
     if rst:
         # acq, img
-        txt_lst.append("mpirun -np 20 find_rst -pairs lst/{acq}_pairs.lst -tif -images {img}/ -output cmaps/{acq}/ -max_res 2048 -scale 1.0 -summary cmaps/{acq}/summary.out -margin 6 -rotation 0 -tx -100-100 -ty -100-100 -trans_feature 8 -distortion 1.0;".format(acq=acq,img=img))
+        txt_lst.append("mpirun -np {p} find_rst -pairs lst/{acq}_pairs.lst -tif -images {img}/ -output cmaps/{acq}/ -max_res 2048 -scale 1.0 -summary cmaps/{acq}/summary.out -margin 6 -rotation 0 -tx -100-100 -ty -100-100 -trans_feature 8 -distortion 1.0;".format(acq=acq,img=img,p=mpi))
     elif register:
-        txt_lst.append("mpirun -np 20 register -pairs lst/s{acq}_pairs.lst -images {img}/ -output maps/s{acq}/ -initial_map cmaps/s{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary maps/s{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img))
+        txt_lst.append("mpirun -np {p} register -pairs lst/s{acq}_pairs.lst -images {img}/ -output maps/s{acq}/ -initial_map cmaps/s{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary maps/s{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img,p=mpi))
     elif align:
-        txt_lst.append("mpirun -np 22 align -images {img}/ -image_list lst/{acq}_core_images.lst -maps maps/{acq}/ -map_list lst/{acq}_core_pairs.lst -output amaps/{acq}/ -schedule schedule_1.lst -incremental -output_grid grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img))
+        txt_lst.append("mpirun -np {p} align -images {img}/ -image_list lst/{acq}_core_images.lst -maps maps/{acq}/ -map_list lst/{acq}_core_pairs.lst -output amaps/{acq}/ -schedule schedule_1.lst -incremental -output_grid grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi))
     elif apply_map_red:
     # acq, img, output
         txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/{acq}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 --reduction 16;".format(acq=acq,img=img, odir=apply_map_red))
