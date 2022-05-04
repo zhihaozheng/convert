@@ -173,7 +173,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
         # acq, img
         txt_lst.append("mpirun -np {p} find_rst -pairs lst/{acq}_pairs.lst -tif -images {img}/ -output cmaps/{acq}/ -max_res 2048 -scale 1.0 -summary cmaps/{acq}/summary.out -margin 6 -rotation 0 -tx -100-100 -ty -100-100 -trans_feature 8 -distortion 1.0;".format(acq=acq,img=img,p=mpi))
     if register:
-        txt_lst.append("mpirun -np {p} register -pairs lst/s{acq}_pairs.lst -images {img}/ -output maps/s{acq}/ -initial_map cmaps/s{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary maps/s{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img,p=mpi))
+        txt_lst.append("mpirun -np {p} register -pairs lst/{acq}_pairs.lst -images {img}/ -output maps/{acq}/ -initial_map cmaps/{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary maps/{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img,p=mpi))
     if align:
         txt_lst.append("mpirun -np {p} align -images {img}/ -image_list lst/{acq}_core_images.lst -maps maps/{acq}/ -map_list lst/{acq}_core_pairs.lst -output amaps/{acq}/ -schedule schedule_1.lst -incremental -output_grid grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi))
     if apply_map_red:
