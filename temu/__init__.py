@@ -147,10 +147,10 @@ def getgoodpairs(acq_label,tile_path,pos_path,save_path,exclude):
 
     get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=0.85)
 
-# example script: temu tk --img --acq_label --output get_tk --rst
-@tkgroup.command()
+# example script: temu get_script --img --acq --output --rst
+@main.command()
 @click.option('--img', default="", required=True)
-@click.option('--acq', default="", required=True)
+@click.option('--acq', default="", required=True, help="acq, e.g. s010")
 @click.option('--output', default="scripts.sh", required=True)
 @click.option('--rst', default=False, is_flag=True, help="")
 @click.option('--register', default=False, is_flag=True, help="")
@@ -165,7 +165,7 @@ def get_script(img, acq, output, rst, register, align, imap, apply_map_red, appl
       produce alignTK script to run stitching
     --img : directory to tif images, wo the last slash
             e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s106-2021.12.22-14.51.58
-    --acq_label: "acq_label, e.g. s010"
+    --acq: "acq, e.g. s010"
     --output: "directory where alignTK script will be saved to"
     '''
 
