@@ -172,17 +172,17 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
     if rst:
         # acq, img
         txt_lst.append("mpirun -np {p} find_rst -pairs lst/{acq}_pairs.lst -tif -images {img}/ -output cmaps/{acq}/ -max_res 2048 -scale 1.0 -summary cmaps/{acq}/summary.out -margin 6 -rotation 0 -tx -100-100 -ty -100-100 -trans_feature 8 -distortion 1.0;".format(acq=acq,img=img,p=mpi))
-    elif register:
+    if register:
         txt_lst.append("mpirun -np {p} register -pairs lst/s{acq}_pairs.lst -images {img}/ -output maps/s{acq}/ -initial_map cmaps/s{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary maps/s{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img,p=mpi))
-    elif align:
+    if align:
         txt_lst.append("mpirun -np {p} align -images {img}/ -image_list lst/{acq}_core_images.lst -maps maps/{acq}/ -map_list lst/{acq}_core_pairs.lst -output amaps/{acq}/ -schedule schedule_1.lst -incremental -output_grid grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi))
-    elif apply_map_red:
+    if apply_map_red:
     # acq, img, output
         txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/{acq}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 --reduction 16;".format(acq=acq,img=img, odir=apply_map_red))
-    elif imap:
+    if imap:
     # acq, img
         txt_lst.append("gen_imaps -image_list lst/{acq}_core_images.lst -images {img}/ -map_list lst/{acq}_core_pairs.lst -output imaps/{acq}/ -maps maps/{acq}/;".format(acq=acq,img=img))
-    elif apply_map_hres:
+    if apply_map_hres:
         txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps imaps/{acq}/ -tile 2048x2048 -region ".format(acq=acq, img=img, odir=apply_map_hres) + funs.get_region(size))
     with open(output,"w") as f:
         f.write("".join(txt_lst))
