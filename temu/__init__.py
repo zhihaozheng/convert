@@ -159,7 +159,7 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
 @click.option('--size', default=None, help="used for apply_map_hres only")
 @click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
 @click.option('--serial/--no-serial', default=True)
-def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi):
+def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, serial):
     '''
     --apply_map_red: "output path, will append acq subdir"
       produce alignTK script to run stitching
