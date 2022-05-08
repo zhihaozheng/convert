@@ -78,9 +78,9 @@ def downloadtif(ctx, source, destination):
     if not os.path.exists(destination):
         os.makedirs(destination)
 
-    progress_dir = mkdir(os.path.join(destination, 'progress_tif'))
-    done_files = set(os.listdir(progress_dir))
-    to_download = list(all_files.difference(done_files))
+    # progress_dir = mkdir(os.path.join(destination, 'progress_tif'))
+    # done_files = set(os.listdir(progress_dir))
+    to_download = list(all_files)
     to_download.sort()
 
     def process(filename):
