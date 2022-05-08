@@ -181,7 +181,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
         with open(img,"r") as f:
             acqs=f.read().splitlines()
         for i in range(len(acqs)):
-            txt_lst.append(gen_cmd(imgs[i], acq[i], rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi))
+            txt_lst.append(gen_cmd(imgs[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi))
         txt = "".join(txt_lst)
     with open(output,"w") as f:
         f.write(txt)
