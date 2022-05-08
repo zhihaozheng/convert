@@ -197,10 +197,10 @@ def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres,
         txt_lst.append("mpirun -np {p} align -images {img}/ -image_list lst/{acq}_core_images.lst -maps maps/{acq}/ -map_list lst/{acq}_core_pairs.lst -output amaps/{acq}/ -schedule schedule_1.lst -incremental -output_grid grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi))
     if apply_map_red:
     # acq, img, output
-        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/{acq}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 --reduction 16;".format(acq=acq,img=img, odir=apply_map_red))
+        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/{acq}/{acq}_r16 -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 --reduction 16;".format(acq=acq,img=img, odir=apply_map_red))
     if imap:
     # acq, img
         txt_lst.append("gen_imaps -image_list lst/{acq}_core_images.lst -images {img}/ -map_list lst/{acq}_core_pairs.lst -output imaps/{acq}/ -maps maps/{acq}/;".format(acq=acq,img=img))
     if apply_map_hres:
-        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps imaps/{acq}/ -tile 2048x2048 -region ".format(acq=acq, img=img, odir=apply_map_hres) + funs.get_region(size)) + ";"
+        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img, odir=apply_map_hres, size_str=funs.get_region(size))
     return "".join(txt_lst)
