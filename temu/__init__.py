@@ -202,5 +202,5 @@ def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres,
     # acq, img
         txt_lst.append("gen_imaps -image_list lst/{acq}_core_images.lst -images {img}/ -map_list lst/{acq}_core_pairs.lst -output imaps/{acq}/ -maps maps/{acq}/;".format(acq=acq,img=img))
     if apply_map_hres:
-        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img, odir=apply_map_hres, size_str=funs.get_region(size))
+        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img, odir=apply_map_hres, size_str=funs.get_region(size)))
     return "".join(txt_lst)
