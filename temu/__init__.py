@@ -154,12 +154,14 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
 @click.option('--register', default=False, is_flag=True, help="")
 @click.option('--align', default=False, is_flag=True, help="")
 @click.option('--imap', default=False, is_flag=True, help="")
-@click.option('--apply_map_red', default=None, type=str)
-@click.option('--apply_map_hres', default=None, help="apply_map_dir")
+@click.option('--apply_map_red', default=False, is_flat=True)
+@click.option('--apply_map_hres', default=False, is_flat=True)
 @click.option('--size', default=None, help="used for apply_map_hres only")
 @click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
 @click.option('--serial/--no-serial', default=True)
-def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, serial):
+@click.option('--map_path', default="", type=str)
+@click.option('--sbatch', default="", type=str)
+def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, serial, map_path, sbatch):
     '''
     --apply_map_red: "output path, will append acq subdir"
       produce alignTK script to run stitching
@@ -172,7 +174,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
          append a list of img dir, acqs, one at a time
     '''
     if serial:
-        txt = gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi)
+        txt = gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path)
     else:
         txt_lst = []
         # read the list
@@ -181,26 +183,36 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
         with open(acq,"r") as f:
             acqs=f.read().splitlines()
         for i in range(len(acqs)):
-            txt_lst.append(gen_cmd(imgs[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi))
+            txt_lst.append(gen_cmd(imgs[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path))
         txt = "".join(txt_lst)
+    if len(sbatch)>0:
+        with open(sbatch,"r") as f:
+            sb=f.read()
+            sb = sb + "\n "
+    else:
+        sb=""
     with open(output,"w") as f:
-        f.write(txt)
+        f.write(sb + txt)
 
-def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi):
+def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path):
+    if len(map_path) > 0 and map_path[-1]=="/":
+        map_path = map_path + "/"
+    if img[-1] == "/":
+        img=img[:-1]
     txt_lst = []
     if rst:
         # acq, img
-        txt_lst.append("mpirun -np {p} find_rst -pairs lst/{acq}_pairs.lst -tif -images {img}/ -output cmaps/{acq}/ -max_res 2048 -scale 1.0 -summary cmaps/{acq}/summary.out -margin 6 -rotation 0 -tx -100-100 -ty -100-100 -trans_feature 8 -distortion 1.0;".format(acq=acq,img=img,p=mpi))
+        txt_lst.append("mpirun -np {p} find_rst -pairs {m}lst/{acq}_pairs.lst -tif -images {img}/ -output {m}cmaps/{acq}/ -max_res 2048 -scale 1.0 -summary {m}cmaps/{acq}/summary.out -margin 6 -rotation 0 -tx -100-100 -ty -100-100 -trans_feature 8 -distortion 1.0;".format(acq=acq,img=img,p=mpi,m=map_path))
     if register:
-        txt_lst.append("mpirun -np {p} register -pairs lst/{acq}_pairs.lst -images {img}/ -output maps/{acq}/ -initial_map cmaps/{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary maps/{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img,p=mpi))
+        txt_lst.append("mpirun -np {p} register -pairs {m}lst/{acq}_pairs.lst -images {img}/ -output {m}maps/{acq}/ -initial_map {m}cmaps/{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary {m}maps/{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img,p=mpi,m=map_path))
     if align:
-        txt_lst.append("mpirun -np {p} align -images {img}/ -image_list lst/{acq}_core_images.lst -maps maps/{acq}/ -map_list lst/{acq}_core_pairs.lst -output amaps/{acq}/ -schedule schedule_1.lst -incremental -output_grid grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi))
+        txt_lst.append("mpirun -np {p} align -images {img}/ -image_list {m}lst/{acq}_core_images.lst -maps {m}maps/{acq}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}amaps/{acq}/ -schedule {m}schedule_1.lst -incremental -output_grid {m}grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi,m=map_path))
     if apply_map_red:
     # acq, img, output
-        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/{acq}/{acq}_r16 -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 --reduction 16;".format(acq=acq,img=img, odir=apply_map_red))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/stitched_r16_{acq} -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -reduction 16;".format(acq=acq,img=img, odir=apply_map_red,m=map_path))
     if imap:
     # acq, img
-        txt_lst.append("gen_imaps -image_list lst/{acq}_core_images.lst -images {img}/ -map_list lst/{acq}_core_pairs.lst -output imaps/{acq}/ -maps maps/{acq}/;".format(acq=acq,img=img))
+        txt_lst.append("gen_imaps -image_list {m}lst/{acq}_core_images.lst -images {img}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}imaps/{acq}/ -maps {m}maps/{acq}/;".format(acq=acq,img=img,m=map_path))
     if apply_map_hres:
-        txt_lst.append("apply_map -image_list lst/{acq}_core_images.lst -images {img}/ -maps amaps/{acq}/ -output {odir}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img, odir=apply_map_hres, size_str=funs.get_region(size)))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,size_str=funs.get_region(size),m=map_path))
     return "".join(txt_lst)
