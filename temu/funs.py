@@ -136,6 +136,18 @@ def get_pairs(acq_label,tile_path,pos_path,save_path):
         f.write("\n".join(subt.fname))
     print(acq_label + " is done")
 
+def get_pairs_batch(acqs,output,
+lpath="/mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2",
+mpath="/mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst"):
+'''
+temu getpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst
+'''
+    with open(acqs,"r") as f:
+        acqs=f.read().splitlines()
+    txt_lst = ["temu getpairs {acq_label} {lp}/{acq} /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/{acq}_stage_positions.csv {mp};".format(acq_label=acq.split("-")[0],acq=acq,lp=lpath,mp=mpath) for acq in acqs]
+    with open(output,"w+") as f:
+        f.write("".join(txt_lst))
+
 def plot_stage_positions(pos_path,save_path,acq_label):
     pos = pd.read_csv(pos_path, header=0, skipinitialspace=True)
     fig, ax = plt.subplots()
