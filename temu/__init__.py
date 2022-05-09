@@ -101,8 +101,8 @@ def downloadtif(ctx, source, destination):
 @click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
 @click.option('--cpath', default="tigerdata://sseung-archive/pni-tem-ca3/tape3_blade2")
 @click.option('--lpath', default="/mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2")
-@click.option('--output', default="scripts.sh")
-def getdownloadscript(acqs,mpi,cpath,lpath,output):
+@click.option('--output', default="scripts.sh", help="acq_cmd_date e.g. s074_align_220509.sh")
+def getdownloads(acqs,mpi,cpath,lpath,output):
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
     txt_lst = ["temu -p {np} downloadtif {cp}/{acq}/subtiles {lp}/{acq};".format(np=mpi,cp=cpath,lp=lpath,acq=i) for i in acqs]
