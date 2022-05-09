@@ -188,14 +188,14 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
     if len(sbatch)>0:
         with open(sbatch,"r") as f:
             sb=f.read()
-            sb = sb + "\n "
+            sb = sb + "\n"
     else:
         sb=""
-    with open(output,"w") as f:
+    with open(output,"w+") as f:
         f.write(sb + txt)
 
 def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path):
-    if len(map_path) > 0 and map_path[-1]=="/":
+    if len(map_path) > 0 and map_path[-1]!="/":
         map_path = map_path + "/"
     if img[-1] == "/":
         img=img[:-1]
