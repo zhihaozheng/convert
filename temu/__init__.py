@@ -97,6 +97,19 @@ def downloadtif(ctx, source, destination):
                 pbar.update(num_inserted)
 
 @main.command()
+@click.option('--acqs', default="", required=True)
+@click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
+@click.option('--cpath', default="tigerdata://sseung-archive/pni-tem-ca3/tape3_blade2")
+@click.option('--lpath', default="/mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.option('--output', default="scripts.sh")
+def getdownloadscript(acqs,mpi,cpath,lpath,output):
+    with open(acqs,"r") as f:
+        acqs=f.read().splitlines()
+    txt_lst = ["temu -p {np} downloadtif {cp}/{acq}/subtiles {lp}/{acq};".format(np=mpi,cp=cpath,lp=lpath,acq=i) for i in acqs]
+    with open(output,"w+") as f:
+        f.write("".join(txt_lst))
+
+@main.command()
 @click.argument("acq")
 @click.argument("img")
 @click.argument("pos_path")
@@ -209,10 +222,10 @@ def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres,
         txt_lst.append("mpirun -np {p} align -images {img}/ -image_list {m}lst/{acq}_core_images.lst -maps {m}maps/{acq}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}amaps/{acq}/ -schedule {m}schedule_1.lst -incremental -output_grid {m}grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi,m=map_path))
     if apply_map_red:
     # acq, img, output
-        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/stitched_r16_{acq} -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -reduction 16;".format(acq=acq,img=img, odir=apply_map_red,m=map_path))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/{acq}_r16 -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -reduction 16;".format(acq=acq,img=img, m=map_path))
     if imap:
     # acq, img
         txt_lst.append("gen_imaps -image_list {m}lst/{acq}_core_images.lst -images {img}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}imaps/{acq}/ -maps {m}maps/{acq}/;".format(acq=acq,img=img,m=map_path))
     if apply_map_hres:
-        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,size_str=funs.get_region(size),m=map_path))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,m=map_path, size_str=funs.get_region(size)))
     return "".join(txt_lst)
