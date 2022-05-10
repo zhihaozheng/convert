@@ -100,7 +100,7 @@ def downloadtif(ctx, source, destination):
 @click.option('--acqs', default="", required=True)
 @click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
 @click.option('--cpath', default="tigerdata://sseung-archive/pni-tem-ca3/tape3_blade2")
-@click.option('--lpath', default="/mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.option('--lpath', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
 @click.option('--output', default="scripts.sh", help="acq_cmd_date e.g. s074_align_220509.sh")
 def getdownloads(acqs,mpi,cpath,lpath,output):
     with open(acqs,"r") as f:
@@ -206,6 +206,37 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
         sb=""
     with open(output,"w+") as f:
         f.write(sb + txt)
+
+@main.command()
+@click.option('--img', default="", required=True)
+@click.option('--output', default="print", required=True)
+@click.option('--rst', default=False, is_flag=True, help="")
+@click.option('--register', default=False, is_flag=True, help="")
+@click.option('--align', default=False, is_flag=True, help="")
+@click.option('--imap', default=False, is_flag=True, help="")
+@click.option('--apply_map_red', default=False, is_flag=True)
+@click.option('--apply_map_hres', default=False, is_flag=True)
+@click.option('--size', default=None, help="used for apply_map_hres only")
+@click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
+@click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
+def getscriptbatch(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path):
+    txt_lst = []
+    # read the list
+    with open(img,"r") as f:
+        imgs=f.read().splitlines()
+        imgs = ["/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + i for i in imgs]
+
+    acqs=[i.split("-")[0] for i in imgs]
+    for i in range(len(acqs)):
+        size_f = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/aligned/" + acqs[i] + "/" + acqs[i] + "_r16.size"
+        txt_lst.append(gen_cmd(imgs[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
+    txt = "".join(txt_lst)
+    if output == "print":
+        return txt
+    else:
+        with open(output,"w+") as f:
+            f.write(txt)
+
 
 def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path):
     if len(map_path) > 0 and map_path[-1]!="/":
