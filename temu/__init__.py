@@ -216,10 +216,9 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 @click.option('--imap', default=False, is_flag=True, help="")
 @click.option('--apply_map_red', default=False, is_flag=True)
 @click.option('--apply_map_hres', default=False, is_flag=True)
-@click.option('--size', default=None, help="used for apply_map_hres only")
 @click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
-def getscriptbatch(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path):
+def getscriptbatch(img, output, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_path):
     txt_lst = []
     # read the list
     with open(img,"r") as f:
