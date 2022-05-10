@@ -223,12 +223,12 @@ def getscriptbatch(img, output, rst, register, align, imap, apply_map_red, apply
     # read the list
     with open(img,"r") as f:
         imgs=f.read().splitlines()
-        imgs = ["/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + i for i in imgs]
+        img_full_paths = ["/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + i for i in imgs]
 
     acqs=[i.split("-")[0] for i in imgs]
     for i in range(len(acqs)):
         size_f = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/aligned/" + acqs[i] + "/" + acqs[i] + "_r16.size"
-        txt_lst.append(gen_cmd(imgs[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
+        txt_lst.append(gen_cmd(img_full_paths[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
     txt = "".join(txt_lst)
     if output == "print":
         return txt
