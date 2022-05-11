@@ -160,19 +160,19 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
 
 @main.command()
 @click.option('--acqs', default="", required=True)
-def getgoodpairsbatch(acqs,tile_path,pos_path,save_path)
+@click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
+def getgoodpairsbatch(acqs, map_path)
     # pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
     # acq = acq_path.split("/")[-1].split("-")[0]
 
     # temu getgoodpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps;
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
-    save_path = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps"
-    lst_save_path = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst"
+    lst_save_path = map_path + "/lst"
 
     for acq in acqs:
         acq_label = acq.split("-")[0]
-        summary_f=os.path.join(save_path,"maps",acq_label,"summary.out")
+        summary_f=os.path.join(map_path,"maps",acq_label,"summary.out")
         pos_path = "/mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/" + acq "_stage_positions.csv"
         tile_path = "/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + acq
         get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85)
