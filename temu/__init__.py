@@ -158,6 +158,27 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
 
     get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=0.85)
 
+@main.command()
+@click.option('--acqs', default="", required=True)
+def getgoodpairsbatch(acqs,tile_path,pos_path,save_path)
+    # pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
+    # acq = acq_path.split("/")[-1].split("-")[0]
+
+    # temu getgoodpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps;
+    with open(acqs,"r") as f:
+        acqs=f.read().splitlines()
+    save_path = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps"
+    lst_save_path = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst"
+
+    for acq in acqs:
+        acq_label = acq.split("-")[0]
+        summary_f=os.path.join(save_path,"maps",acq_label,"summary.out")
+        pos_path = "/mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/" + acq "_stage_positions.csv"
+        tile_path = "/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + acq
+        get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85)
+
+
+
 # example script: temu getscript --img --acq --output --rst
 @main.command()
 @click.option('--img', default="", required=True)
@@ -257,5 +278,5 @@ def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres,
     # acq, img
         txt_lst.append("gen_imaps -image_list {m}lst/{acq}_core_images.lst -images {img}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}imaps/{acq}/ -maps {m}maps/{acq}/;".format(acq=acq,img=img,m=map_path))
     if apply_map_hres:
-        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,m=map_path, size_str=funs.get_region(size)))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/imap/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,m=map_path, size_str=funs.get_region(size)))
     return "".join(txt_lst)
