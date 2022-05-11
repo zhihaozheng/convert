@@ -178,7 +178,7 @@ def getgoodpairsbatch(acqs, map_path):
         summary_f=os.path.join(map_path,"maps",acq_label,"summary.out")
         pos_path = "/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/" + acq + "_stage_positions.csv"
         tile_path = "/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + acq
-        get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85)
+        get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=0.85)
 
 
 
