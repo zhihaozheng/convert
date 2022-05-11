@@ -161,7 +161,10 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
 @main.command()
 @click.option('--acqs', default="", required=True)
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
-def getgoodpairsbatch(acqs, map_path)
+def getgoodpairsbatch(acqs, map_path):
+    """
+    acqs: /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tk_scripts/s56_acqs.lst
+    """
     # pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
     # acq = acq_path.split("/")[-1].split("-")[0]
 
