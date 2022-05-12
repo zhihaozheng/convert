@@ -10,7 +10,7 @@ from tqdm import tqdm
 from cloudfiles import CloudFiles
 from cloudvolume.lib import mkdir, touch
 
-from temu.funs import get_pairs,get_good_pairs,get_region
+from temu.funs import get_pairs,get_good_pairs,get_preview_region
 
 @click.group()
 @click.option("-p", "--parallel", default=1, help="Run with this number of parallel processes. If 0, use number of cores.")
@@ -314,5 +314,5 @@ def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres,
     # acq, img
         txt_lst.append("gen_imaps -image_list {m}lst/{acq}_core_images.lst -images {img}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}imaps/{acq}/ -maps {m}maps/{acq}/;".format(acq=acq,img=img,m=map_path))
     if apply_map_hres:
-        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/imap/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,m=map_path, size_str=funs.get_region(size)))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/imap/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,m=map_path, size_str=funs.get_preview_region(size)))
     return "".join(txt_lst)

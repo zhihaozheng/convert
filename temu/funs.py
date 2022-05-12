@@ -66,10 +66,21 @@ def get_region(path="/home/voxa/Documents/zhihao/211228-small_stack_stitch/align
     y1 = int((hei - nums[1])//2 + nums[3])
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
-def get_preview_region(path):
+def get_preview_region(path="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/aligned/s015/s015_preview_size"):
     '''
     path: path to the apply_map terminal output file
     '''
+    with open(path,"r") as f:
+        contents = f.readlines()
+        l = [i for i in contents if "output width" in i][0]
+
+    nums = [int(s) for s in re.findall(r'\d+', l)]
+    wid = int(np.ceil(nums[0]/2048)*2048)
+    hei = int(np.ceil(nums[3]/2048)*2048)
+    x1 = int((wid - nums[0])//2 + nums[1])
+    y1 = int((hei - nums[3])//2 + nums[4])
+    return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
+
 
 def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85):
     '''
