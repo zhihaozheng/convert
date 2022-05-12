@@ -125,8 +125,8 @@ def getpairs(acq,img,pos_path,save_path):
 @main.command()
 @click.option('--acqs', default="", required=True)
 @click.option('--output', default="scripts.sh", help="")
-@click.option("--lpath", default="/mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2")
-@click.option("--mpath", default="/mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst")
+@click.option("--lpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.option("--mpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst")
 def getpairsbatch(acqs, output, lpath, mpath):
     '''
     temu getpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst
