@@ -139,7 +139,7 @@ def getpairsbatch(acqs, output, lpath, mpath):
 
 @main.command()
 @click.option("--acqs",default="")
-@click.option("--output", help="should be a directory e.g. /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tape3_blade2-s111-s151")
+@click.option("--output", help="where the script is saved ")
 @click.option("--lpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
 @click.option("--map_path",default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps")
 def previewbatch(acqs, output, lpath, map_path):
@@ -148,12 +148,11 @@ def previewbatch(acqs, output, lpath, map_path):
         acqs=f.read().splitlines()
 
     txt_lst = []
-
     for acq in acqs:
         acq_label = acq.split("-")[0]
         cmd = gen_cmd(os.path.join(lpath,acq), acq_label, False, False, False, False, True, False, None, 2, map_path)
-        txt_lst.append("{} > {}/{}_apply_map_preview & read -t 120 ; kill $!;".format(cmd[:-1], output, acq_label))
-    with open(output + "/preview_cmds_" + acqs[0].split("-")[0] + "_series","w+") as f:
+        txt_lst.append("{} > {}/aligned/{}/{}_preview_size -t 120 ; kill $!;".format(cmd[:-1], map_path, acq_label, acq_label))
+    with open(output,"w+") as f:
         f.write("\n".join(txt_lst))
 
 @main.command()

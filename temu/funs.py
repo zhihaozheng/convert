@@ -66,7 +66,7 @@ def get_region(path="/home/voxa/Documents/zhihao/211228-small_stack_stitch/align
     y1 = int((hei - nums[1])//2 + nums[3])
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
-def get_preview_region(path=):
+def get_preview_region(path):
     '''
     path: path to the apply_map terminal output file
     '''
