@@ -153,7 +153,7 @@ def previewbatch(acqs, output, lpath, map_path):
         cmd = gen_cmd(os.path.join(lpath,acq), acq_label, False, False, False, False, True, False, None, 2, map_path)
         txt_lst.append("{} > {}/aligned/{}/{}_preview_size & read -t 120 ; kill $!;".format(cmd[:-1], map_path, acq_label, acq_label))
     with open(output,"w+") as f:
-        f.write("\n".join(txt_lst))
+        f.write("".join(txt_lst))
 
 @main.command()
 @click.argument("acq")
