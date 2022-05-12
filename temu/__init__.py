@@ -123,6 +123,21 @@ def getpairs(acq,img,pos_path,save_path):
     get_pairs(acq,img,pos_path,save_path)
 
 @main.command()
+@click.option('--acqs', default="", required=True)
+@click.option('--output', default="scripts.sh", help="")
+@click.argument("--lpath", default="/mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.argument("--mpath", default="/mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst")
+def getpairsbatch(acqs,output, lpath, mpath):
+    '''
+    temu getpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst
+    '''
+    with open(acqs,"r") as f:
+        acqs=f.read().splitlines()
+    txt_lst = ["temu getpairs {acq_label} {lp}/{acq} /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/{acq}_stage_positions.csv {mp};".format(acq_label=acq.split("-")[0],acq=acq,lp=lpath,mp=mpath) for acq in acqs]
+    with open(output,"w+") as f:
+        f.write("".join(txt_lst))
+
+@main.command()
 @click.argument("acq")
 @click.argument("tile_path")
 @click.argument("pos_path")
@@ -196,7 +211,7 @@ def getgoodpairsbatch(acqs, map_path):
 @click.option('--size', default=None, help="used for apply_map_hres only")
 @click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
 @click.option('--serial/--no-serial', default=True)
-@click.option('--map_path', default="", type=str)
+@click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
 @click.option('--sbatch', default="", type=str)
 def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, serial, map_path, sbatch):
     '''
