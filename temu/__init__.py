@@ -151,8 +151,8 @@ def previewbatch(acqs, output, lpath, map_path):
 
     for acq in acqs:
         acq_label = acq.split("-")[0]
-        cmd = gen_cmd(acq, acq_label, False, False, False, False, True, False, None, 2, map_path)
-        txt_lst.append("{}/{} > {}/{}_apply_map_preview & read -t 120 ; kill $!;".format(lpath, cmd[:-1], output, acq_label))
+        cmd = gen_cmd(os.path.join(lpath,acq), acq_label, False, False, False, False, True, False, None, 2, map_path)
+        txt_lst.append("{} > {}/{}_apply_map_preview & read -t 120 ; kill $!;".format(cmd[:-1], output, acq_label))
     with open(output + "/preview_cmds_" + acqs[0].split("-")[0] + "_series","w+") as f:
         f.write("\n".join(txt_lst))
 
