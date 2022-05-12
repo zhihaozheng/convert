@@ -133,7 +133,7 @@ def getpairsbatch(acqs, output, lpath, mpath):
     '''
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
-    txt_lst = ["temu getpairs {acq_label} {lp}/{acq} /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/{acq}_stage_positions.csv {mp};".format(acq_label=acq.split("-")[0],acq=acq,lp=lpath,mp=mpath) for acq in acqs]
+    txt_lst = ["temu getpairs {acq_label} {lp}/{acq} /mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/{acq}_stage_positions.csv {mp};".format(acq_label=acq.split("-")[0],acq=acq,lp=lpath,mp=mpath) for acq in acqs]
     with open(output,"w+") as f:
         f.write("".join(txt_lst))
 
