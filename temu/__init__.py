@@ -140,7 +140,7 @@ def getpairsbatch(acqs, output, lpath, mpath):
 @main.command()
 @click.option("--acqs",default="")
 @click.option("--output", help="should be a directory e.g. /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tape3_blade2-s111-s151")
-@click.option("--lpath", default="/mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.option("--lpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
 @click.option("--map_path",default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps")
 def previewbatch(acqs, output, lpath, map_path):
 
