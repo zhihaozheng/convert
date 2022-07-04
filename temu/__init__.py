@@ -306,13 +306,13 @@ def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres,
     if register:
         txt_lst.append("mpirun -np {p} register -pairs {m}lst/{acq}_pairs.lst -images {img}/ -output {m}maps/{acq}/ -initial_map {m}cmaps/{acq}/ -distortion 13.0 -output_level 7 -depth 6 -quality 0.1 -summary {m}maps/{acq}/summary.out -min_overlap 10.0;".format(acq=acq,img=img,p=mpi,m=map_path))
     if align:
-        txt_lst.append("mpirun -np {p} align -images {img}/ -image_list {m}lst/{acq}_core_images.lst -maps {m}maps/{acq}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}amaps/{acq}/ -schedule {m}schedule_1.lst -incremental -output_grid {m}grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi,m=map_path))
+        txt_lst.append("mpirun -np {p} align -images {img}/ -image_list {m}lst/{acq}_core_images.lst -maps {m}maps/{acq}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}amaps/{acq}/ -schedule {m}schedule_2.lst -incremental -output_grid {m}grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi,m=map_path))
     if apply_map_red:
     # acq, img, output
-        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/{acq}_r16 -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -reduction 16;".format(acq=acq,img=img, m=map_path))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/{acq}_r16 -memory 15000 -overlay-reduction 16;".format(acq=acq,img=img, m=map_path))
     if imap:
     # acq, img
         txt_lst.append("gen_imaps -image_list {m}lst/{acq}_core_images.lst -images {img}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}imaps/{acq}/ -maps {m}maps/{acq}/;".format(acq=acq,img=img,m=map_path))
     if apply_map_hres:
-        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/imap/ -memory 7000 -overlay -rotation -30 -rotation_center 20000,0 -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,m=map_path, size_str=funs.get_preview_region(size)))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/imap/ -memory 15000 -overlay -imaps {m}imaps/{acq}/ -tile 2048x2048 -region {size_str};".format(acq=acq, img=img,m=map_path, size_str=funs.get_preview_region(size)))
     return "".join(txt_lst)
