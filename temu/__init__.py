@@ -309,7 +309,7 @@ def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres,
         txt_lst.append("mpirun -np {p} align -images {img}/ -image_list {m}lst/{acq}_core_images.lst -maps {m}maps/{acq}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}amaps/{acq}/ -schedule {m}schedule_2.lst -incremental -output_grid {m}grids/{acq}/ -grid_size 8192x8192 -fold_recovery 360;".format(acq=acq,img=img,p=mpi,m=map_path))
     if apply_map_red:
     # acq, img, output
-        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/{acq}_r16 -memory 15000 -overlay-reduction 16;".format(acq=acq,img=img, m=map_path))
+        txt_lst.append("apply_map -image_list {m}lst/{acq}_core_images.lst -images {img}/ -maps {m}amaps/{acq}/ -output {m}aligned/{acq}/{acq}_r16 -memory 15000 -overlay -reduction 16;".format(acq=acq,img=img, m=map_path))
     if imap:
     # acq, img
         txt_lst.append("gen_imaps -image_list {m}lst/{acq}_core_images.lst -images {img}/ -map_list {m}lst/{acq}_core_pairs.lst -output {m}imaps/{acq}/ -maps {m}maps/{acq}/;".format(acq=acq,img=img,m=map_path))
