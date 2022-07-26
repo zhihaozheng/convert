@@ -297,14 +297,14 @@ def getscriptbatch(img, output, rst, register, align, imap, apply_map_red, apply
 @click.option('--acqs', default="", required=True)
 @click.option('--np', default="", required=True)
 @click.option('--output', default="print", required=True)
-def getuploadbatch(acqs, np):
+def getuploadbatch(acqs, np, output):
     with open(acqs,"r") as f:
-        acqs=f.read().splitlines()
-        acqs=[i[:4] for i in acqs]
-        nums=[1300+int(i[1:4]) for i in acqs]
+        aqs=f.read().splitlines()
+        aqs=[i[:4] for i in aqs]
+        nums=[1300+int(i[1:4]) for i in aqs]
     txt_lst = []
-    for i in range(len(acqs)):
-        txt_lst.append("tem2ng -p {p} upload {aq}/imap/ tigerdata://sseung-test1/ca3-alignment-temp/full_section_imap4/ --z {z} --pad 122880;".format(p=np,aq=acqs[i],z=nums[i]))
+    for i in range(len(aqs)):
+        txt_lst.append("tem2ng -p {p} upload {aq}/imap/ tigerdata://sseung-test1/ca3-alignment-temp/full_section_imap4/ --z {z} --pad 122880;".format(p=np,aq=aqs[i],z=nums[i]))
     txt = "".join(txt_lst)
     if output == "print":
         return txt
