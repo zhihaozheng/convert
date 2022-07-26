@@ -293,6 +293,26 @@ def getscriptbatch(img, output, rst, register, align, imap, apply_map_red, apply
         with open(output,"w+") as f:
             f.write(txt)
 
+@main.command()
+@click.option('--acqs', default="", required=True)
+@click.option('--np', default="", required=True)
+@click.option('--output', default="print", required=True)
+def getuploadbatch(acqs, np):
+    with open(acqs,"r") as f:
+        acqs=f.read().splitlines()
+        acqs=[i[:4] for i in acqs]
+        nums=[1300+int(i[1:4]) for i in acqs]
+    txt_lst = []
+    for i in range(len(acqs)):
+        txt_lst.append("tem2ng -p {p} upload {aq}/imap/ tigerdata://sseung-test1/ca3-alignment-temp/full_section_imap4/ --z {z} --pad 122880;".format(p=np,aq=acqs[i],z=nums[i]))
+    txt = "".join(txt_lst)
+    if output == "print":
+        return txt
+    else:
+        with open(output,"w+") as f:
+            f.write(txt)
+
+# tem2ng -p 6 upload s030/imap/ tigerdata://sseung-test1/ca3-alignment-temp/full_section_imap4/ --z 1330 --pad 122880;
 
 def gen_cmd(img, acq, rst, register, align, imap, apply_map_red, apply_map_hres, size, mpi, map_path):
     if len(map_path) > 0 and map_path[-1]!="/":
