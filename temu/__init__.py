@@ -189,7 +189,7 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
         with open(exclude,"r") as f:
             exclude=f.read().splitlines()
 
-    get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=0.85)
+    get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=0.8)
 
 @main.command()
 @click.option('--acqs', default="", required=True)
