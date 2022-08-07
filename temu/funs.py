@@ -82,7 +82,7 @@ def get_preview_region(path="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
 
-def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.84):
+def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.8):
     '''
     # 220421 get_good_pairs change to picking high corr ones from summary_f
     acq_label: label for the section that will be attached to the pair list name
