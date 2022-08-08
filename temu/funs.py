@@ -105,7 +105,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
     summary = pd.read_csv(summary_f, header=1,sep=" ",nrows=line_number-4, skipinitialspace=True)
 
     # try a two tiers thresholding of correlations
-    corr_t1 = summary.query("CORRELATION>0.8")..assign(mid=lambda x: 50<int(x["IMAGE"].split("_")[1])<300)
+    corr_t1 = summary.query("CORRELATION>0.8").assign(mid=lambda x: 50<int(x["IMAGE"].split("_")[1])<300)
     highcorr = corr_t1.query("CORRELATION>@corr_threshold OR mid")[["IMAGE","REFERENCE"]]
 
 
