@@ -107,7 +107,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
     # try a two tiers thresholding of correlations
     corr_t1 = summary.query("CORRELATION>0.8")
     corr_t1['mid']=corr_t1.apply(lambda x: 50<int(x["IMAGE"].split("_")[1])<300,axis=1)
-    highcorr = corr_t1.query("CORRELATION>@corr_threshold OR mid")[["IMAGE","REFERENCE"]]
+    highcorr = corr_t1.query("CORRELATION>@corr_threshold | mid")[["IMAGE","REFERENCE"]]
 
     # lowcorr = summary.query("CORRELATION<0.85")[["IMAGE","REFERENCE"]]
     highcorr_pairs = [set(highcorr.iloc[i]) for i in range(len(highcorr))]
