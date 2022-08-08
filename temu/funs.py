@@ -82,7 +82,7 @@ def get_preview_region(path="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
 
-def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85):
+def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.7):
     '''
     # 220421 get_good_pairs change to picking high corr ones from summary_f
     acq_label: label for the section that will be attached to the pair list name
@@ -105,7 +105,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
     summary = pd.read_csv(summary_f, header=1,sep=" ",nrows=line_number-4, skipinitialspace=True)
 
     # try a two tiers thresholding of correlations
-    corr_t1 = summary.query("CORRELATION>0.8")
+    corr_t1 = summary.query("CORRELATION>0.7")
     corr_t1['mid']=corr_t1.apply(lambda x: 50<int(x["IMAGE"].split("_")[1])<300,axis=1)
     highcorr = corr_t1.query("CORRELATION>@corr_threshold | mid")[["IMAGE","REFERENCE"]]
 
