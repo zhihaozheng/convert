@@ -266,8 +266,8 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 
 @main.command()
 @click.option('--img', default="", required=True)
-@click.option('--output', default="print", type=str, required=True)
-@click.option('--sbatch', default="/home/voxa/scripts/stitch/stitching/220409_stitch_full_section/sbatch_rst_reg_template.sh", type=str)
+@click.option('--output', default="", type=str, required=True)
+@click.option('--sbatch', default="", type=str)
 @click.option('--rst', default=False, is_flag=True, help="")
 @click.option('--register', default=False, is_flag=True, help="")
 @click.option('--align', default=False, is_flag=True, help="")
@@ -289,6 +289,7 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
         txt_lst.append(gen_cmd(img_full_paths[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
 
     if len(sbatch) > 0:
+        # sbatch = "/home/voxa/scripts/stitch/stitching/220409_stitch_full_section/sbatch_rst_reg_template.sh"
         # sbatch will be a directory pointing to the template file
         # output should then be a directory where the sbatch scripts will be saved to
         # default save into 5 sections each sbatch script
@@ -307,10 +308,9 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
                 t1 = t1[:j1] + acqs[i] + t1[j1+1:]
                 with open(os.path.join(output,fname),"w+") as wf:
                     wf.write(t1)
-    txt = "".join(txt_lst)
-    if output == "print":
-        return txt
     else:
+        # if sbatch is not supplied, save the commands to a single text file
+        txt = "".join(txt_lst)
         with open(output,"w+") as f:
             f.write(txt)
 
