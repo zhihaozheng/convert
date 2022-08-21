@@ -267,6 +267,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 @main.command()
 @click.option('--img', default="", required=True)
 @click.option('--output', default="print", required=True)
+@click.option('--sbatch', default="/home/voxa/scripts/stitch/stitching/220409_stitch_full_section/sbatch_rst_reg_template.sh", type=str)
 @click.option('--rst', default=False, is_flag=True, help="")
 @click.option('--register', default=False, is_flag=True, help="")
 @click.option('--align', default=False, is_flag=True, help="")
@@ -275,7 +276,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 @click.option('--apply_map_hres', default=False, is_flag=True)
 @click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
-def getscriptbatch(img, output, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_path):
+def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_path):
     txt_lst = []
     # read the list
     with open(img,"r") as f:
@@ -286,6 +287,26 @@ def getscriptbatch(img, output, rst, register, align, imap, apply_map_red, apply
     for i in range(len(acqs)):
         size_f = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/aligned/" + acqs[i] + "/" + acqs[i] + "_preview_size"
         txt_lst.append(gen_cmd(img_full_paths[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
+
+    if len(sbatch) > 0:
+        # sbatch will be a directory pointing to the template file
+        # output should then be a directory where the sbatch scripts will be saved to
+        # default save into 5 sections each sbatch script
+        if rst:
+            ops = "rst_reg"
+        elif align:
+            ops = "align"
+        else:
+            ops = "highres"
+        with open(sbatch,"r") as f:
+            temp=f.read()
+            for i in range(0, len(acqs), 5):
+                fname = acqs[i] + "_more", ops, ".sh"
+                t1 = temp + "\n" + "".join(txt_lst[i:i+5])
+                j1 = t1.find("name=") + 5
+                t1 = t1[:j1] + acqs[i] + t1[j1+1:]
+                with open(os.path.join(output,fname),"w+") as wf:
+                    wf.write(t1)
     txt = "".join(txt_lst)
     if output == "print":
         return txt
