@@ -266,7 +266,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 
 @main.command()
 @click.option('--img', default="", required=True)
-@click.option('--output', default="print", required=True)
+@click.option('--output', default="print", type=str, required=True)
 @click.option('--sbatch', default="/home/voxa/scripts/stitch/stitching/220409_stitch_full_section/sbatch_rst_reg_template.sh", type=str)
 @click.option('--rst', default=False, is_flag=True, help="")
 @click.option('--register', default=False, is_flag=True, help="")
@@ -301,7 +301,7 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
         with open(sbatch,"r") as f:
             temp=f.read()
             for i in range(0, len(acqs), 5):
-                fname = acqs[i] + "_more", ops, ".sh"
+                fname = acqs[i] + "_more" + ops + ".sh"
                 t1 = temp + "\n" + "".join(txt_lst[i:i+5])
                 j1 = t1.find("name=") + 5
                 t1 = t1[:j1] + acqs[i] + t1[j1+1:]
