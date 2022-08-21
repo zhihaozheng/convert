@@ -302,7 +302,7 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
         with open(sbatch,"r") as f:
             temp=f.read()
             for i in range(0, len(acqs), 5):
-                fname = acqs[i] + "_more" + ops + ".sh"
+                fname = acqs[i] + "_more_" + ops + ".sh"
                 t1 = temp + "\n" + "".join(txt_lst[i:i+5])
                 j1 = t1.find("name=") + 5
                 t1 = t1[:j1] + acqs[i] + t1[j1+1:]
