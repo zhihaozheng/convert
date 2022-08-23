@@ -299,6 +299,8 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
             ops = "align"
         else:
             ops = "highres"
+
+        sb_lst = []
         with open(sbatch,"r") as f:
             temp=f.read()
             for i in range(0, len(acqs), 5):
@@ -306,8 +308,11 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
                 t1 = temp + "\n" + "".join(txt_lst[i:i+5])
                 j1 = t1.find("name=") + 5
                 t1 = t1[:j1] + acqs[i] + t1[j1+1:]
+                sb_lst.append("sbatch " + fname + ";")
                 with open(os.path.join(output,fname),"w+") as wf:
                     wf.write(t1)
+        with open(os.path.join(output,"sbatchs"),"w+") as sbf:
+            sbf.write("".join(sb_lst))
     else:
         # if sbatch is not supplied, save the commands to a single text file
         txt = "".join(txt_lst)
