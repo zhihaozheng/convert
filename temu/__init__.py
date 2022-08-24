@@ -151,7 +151,7 @@ def previewbatch(acqs, output, lpath, map_path):
     for acq in acqs:
         acq_label = acq.split("-")[0]
         cmd = gen_cmd(os.path.join(lpath,acq), acq_label, False, False, False, False, True, False, None, 2, map_path)
-        txt_lst.append("{} > {}/aligned/{}/{}_preview_size & read -t 120 ; kill $!;".format(cmd[:-1], map_path, acq_label, acq_label))
+        txt_lst.append("{} > {}/aligned/{}/{}_preview_size & read -t 320 ; kill $!;".format(cmd[:-1], map_path, acq_label, acq_label))
     with open(output,"w+") as f:
         f.write("".join(txt_lst))
 
@@ -274,7 +274,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 @click.option('--imap', default=False, is_flag=True, help="")
 @click.option('--apply_map_red', default=False, is_flag=True)
 @click.option('--apply_map_hres', default=False, is_flag=True)
-@click.option('--mpi', default=22, type=int, help="number of parallel processes for mpirun")
+@click.option('--mpi', default=56, type=int, help="number of parallel processes for mpirun")
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
 def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_path):
     txt_lst = []
