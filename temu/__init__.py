@@ -161,7 +161,8 @@ def previewbatch(acqs, output, lpath, map_path):
 @click.argument("pos_path")
 @click.argument("save_path")
 @click.option('--exclude', type=str, default="", help="path to a file containing a lst of tiles to exclude", show_default=True)
-def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
+@click.option('--threshold', default=0.85, type=float)
+def getgoodpairs(acq,tile_path,pos_path,save_path,exclude, threshold):
     '''
     acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
@@ -189,12 +190,13 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude):
         with open(exclude,"r") as f:
             exclude=f.read().splitlines()
 
-    get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core")
+    get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=threshold)
 
 @main.command()
 @click.option('--acqs', default="", required=True)
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
-def getgoodpairsbatch(acqs, map_path):
+@click.option('--threshold', default=0.85, type=float)
+def getgoodpairsbatch(acqs, map_path, threshold):
     """
     acqs: /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tk_scripts/s56_acqs.lst
     """
@@ -211,7 +213,7 @@ def getgoodpairsbatch(acqs, map_path):
         summary_f=os.path.join(map_path,"maps",acq_label,"summary.out")
         pos_path = "/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/" + acq + "_stage_positions.csv"
         tile_path = "/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + acq
-        get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core")
+        get_good_pairs(acq_label,summary_f,tile_path,pos_path,lst_save_path,exclude=[],fname="core",corr_threshold=threshold)
 
 
 
