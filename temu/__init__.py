@@ -313,6 +313,7 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
                 sb_lst.append("sbatch " + fname + ";")
                 with open(os.path.join(output,fname),"w+") as wf:
                     wf.write(t1)
+                print(fname + "is saved")
         with open(os.path.join(output,"sbatchs"),"w+") as sbf:
             sbf.write("".join(sb_lst))
     else:
