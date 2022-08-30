@@ -289,6 +289,7 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
     for i in range(len(acqs)):
         size_f = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/aligned/" + acqs[i] + "/" + acqs[i] + "_preview_size"
         txt_lst.append(gen_cmd(img_full_paths[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
+        print("get region " + acqs[i])
 
     if len(sbatch) > 0:
         # sbatch = "/home/voxa/scripts/stitch/stitching/220409_stitch_full_section/sbatch_rst_reg_template.sh"
