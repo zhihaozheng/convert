@@ -149,7 +149,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
                 align_image_list.extend(ps_list)
     align_image_list = list(set(align_image_list))
 
-    G = nx.parse_edgelist([i[:12] + i[29:41] + i[55:] for i in align_pair_list_full])
+    G = nx.parse_edgelist([i[:12] + i[29:40] for i in align_pair_list_full])
     lst = sorted(nx.connected_components(G), key=len, reverse=True)[1:]
     fls = set().union(*lst)
     core_align_pairs = [i for i in align_pair_list_full
