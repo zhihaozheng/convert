@@ -157,7 +157,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
     core_images = [i for i in align_image_list if i not in fls]
 
     # 221002 add all pairs between core_iamges
-    core_pair_set = [set(i.split(" ")[:2]) for i in core_align_pairs]
+    core_pair_set = [set((i.split(" ")[0],i.split(" ")[5])) for i in core_align_pairs]
     for pair in pair_list:
         ps_list = [pair.split(" ")[0],pair.split(" ")[5]]
         ps = set(ps_list)
