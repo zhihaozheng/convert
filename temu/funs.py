@@ -22,6 +22,27 @@ def get_pair_list(subt):
             pair_list.append(" ".join(tile_pair) + " " + "-".join(tile_pair))
     return pair_list
 
+def get_pair_list_pix(subt):
+    pair_list = []
+    for xi in pd.unique(subt.xis):
+        xt = subt.query("xis==@xi")
+        cl = [(i,j) for i in xt.yis for j in xt.yis if j-i==1]
+        for pair in cl:
+            t1 = xt.query("yis in @pair").copy()
+            tile_pair = t1.sort_values(by ="yis")["fname"].tolist()
+            pair_list.append(tile_pair[0] + " 0 5999 4800 5999 " + tile_pair[1] + " 0 5999 0 1200 " +
+                             "-".join(tile_pair))
+
+    for yi in pd.unique(subt.yis):
+        yt = subt.query("yis==@yi")
+        cl = [(i,j) for i in yt.xis for j in yt.xis if j-i==1]
+        for pair in cl:
+            t1 = yt.query("xis in @pair").copy()
+            tile_pair = t1.sort_values(by ="xis")["fname"].tolist()
+            pair_list.append(tile_pair[0] + " 4800 5999 0 5999 " + tile_pair[1] + " 0 1200 0 5999 " +
+                             "-".join(tile_pair))
+    return pair_list
+
 def get_subtile_loc(pos_path, tile_path):
     sp = pd.read_csv(pos_path, skipinitialspace=True)
     delta = 44395.385
@@ -111,41 +132,43 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
 
     # lowcorr = summary.query("CORRELATION<0.85")[["IMAGE","REFERENCE"]]
     highcorr_pairs = [set(highcorr.iloc[i]) for i in range(len(highcorr))]
-    align_pair_list = []
+    align_pair_list_full = []
     align_image_list = []
 
     # pos_path = os.path.join(data_path,acq_name,"metadata","stage_positions.csv")
     subt = get_subtile_loc(pos_path, tile_path)
-    pair_list = get_pair_list(subt)
+    pair_list = get_pair_list_pix(subt)
     for pair in pair_list:
-        ps = set(pair.split(" ")[:2])
-        ps_list = list(ps)
+        ps_list = [pair.split(" ")[0],pair.split(" ")[5]]
+        ps = set(ps_list)
         if ps in highcorr_pairs:
             if len(exclude)>0 and (ps_list[0] in exclude or ps_list[1] in exclude):
                 continue
             else:
-                align_pair_list.append(pair)
+                align_pair_list_full.append(pair)
                 align_image_list.extend(ps_list)
     align_image_list = list(set(align_image_list))
 
-    G = nx.parse_edgelist([i[:23] for i in align_pair_list])
+    G = nx.parse_edgelist([i[:12] + i[29:41] + i[55:] for i in align_pair_list_full])
     lst = sorted(nx.connected_components(G), key=len, reverse=True)[1:]
     fls = set().union(*lst)
-    core_align_pairs = [i for i in align_pair_list
-                        if i[:11] not in fls and i[13:23] not in fls]
+    core_align_pairs = [i for i in align_pair_list_full
+                        if i[:11] not in fls and i[29:40] not in fls]
     core_images = [i for i in align_image_list if i not in fls]
 
     # 221002 add all pairs between core_iamges
     core_pair_set = [set(i.split(" ")[:2]) for i in core_align_pairs]
     for pair in pair_list:
-        ps = set(pair.split(" ")[:2])
+        ps_list = [pair.split(" ")[0],pair.split(" ")[5]]
+        ps = set(ps_list)
         if ps not in core_pair_set:
-            ps_list = list(ps)
             if ps_list[0] in core_images and ps_list[1] in core_images:
                 core_align_pairs.append(pair)
 
     with open(os.path.join(save_path,acq_label + "_" + fname + "_pairs.lst"),"w") as f:
         f.write("\n".join(core_align_pairs))
+    with open(os.path.join(save_path,acq_label + "_" + fname + "_maps.lst"),"w") as f:
+        f.write("\n".join([i[:12] + i[29:41] + i[55:] for i in core_align_pairs]))
     with open(os.path.join(save_path,acq_label + "_" + fname + "_images.lst"),"w") as f:
         f.write("\n".join(core_images))
     print("pairs_images_lst saved for " + acq_label)
@@ -158,7 +181,7 @@ def get_pairs(acq_label,tile_path,pos_path,save_path):
     save_path: path to where the pair_list and image_list will save to
     '''
     subt = get_subtile_loc(pos_path, tile_path)
-    pair_list = get_pair_list(subt)
+    pair_list = get_pair_list_pix(subt)
 
     with open(os.path.join(save_path,acq_label + "_pairs.lst"),"w") as f:
         f.write("\n".join(pair_list))
