@@ -306,9 +306,9 @@ def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_re
         sb_lst = []
         with open(sbatch,"r") as f:
             temp=f.read()
-            for i in range(0, len(acqs), 5):
+            for i in range(0, len(acqs), 2):
                 fname = acqs[i] + "_more_" + ops + ".sh"
-                t1 = temp + "\n" + "".join(txt_lst[i:i+5])
+                t1 = temp + "\n" + "".join(txt_lst[i:i+2])
                 j1 = t1.find("name=") + 5
                 t1 = t1[:j1] + acqs[i] + t1[j1+1:]
                 sb_lst.append("sbatch " + fname + ";")
