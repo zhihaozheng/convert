@@ -127,13 +127,14 @@ def getpairs(acq,img,pos_path,save_path):
 @click.option('--output', default="scripts.sh", help="")
 @click.option("--lpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
 @click.option("--mpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst")
-def getpairsbatch(acqs, output, lpath, mpath):
+@click.option("--pos_path",default="/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2")
+def getpairsbatch(acqs, output, lpath, mpath, pos_path):
     '''
     temu getpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst
     '''
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
-    txt_lst = ["temu getpairs {acq_label} {lp}/{acq} /mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/{acq}_stage_positions.csv {mp};".format(acq_label=acq.split("-")[0],acq=acq,lp=lpath,mp=mpath) for acq in acqs]
+    txt_lst = ["temu getpairs {acq_label} {lp}/{acq} {pos}/{acq}_stage_positions.csv {mp};".format(acq_label=acq.split("-")[0],pos=pos_path, acq=acq,lp=lpath,mp=mpath) for acq in acqs]
     with open(output,"w+") as f:
         f.write("".join(txt_lst))
 
