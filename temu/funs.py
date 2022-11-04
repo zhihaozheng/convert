@@ -45,7 +45,9 @@ def get_pair_list_pix(subt):
 
 def get_subtile_loc(pos_path, tile_path):
     sp = pd.read_csv(pos_path, skipinitialspace=True)
-    delta = 44395.385
+    delta = 42795
+    # blade2 step: step = 44395.385
+    # blade1 step: step = 42795
     x_min = min(sp.stage_x_nm)
     y_max = max(sp.stage_y_nm)
     sp = sp.assign(xi=round((sp.stage_x_nm - x_min)/delta),
