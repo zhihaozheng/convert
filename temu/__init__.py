@@ -199,7 +199,7 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude, threshold):
 @click.option('--threshold', default=0.85, type=float)
 @click.argument('--tif_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", str=str)
 @click.argument('--pos_path', default="/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2",type=str)
-def getgoodpairsbatch(acqs, tif_path, pos_path, map_path, threshold):
+def getgoodpairsbatch(acqs, map_path, threshold, tif_path, pos_path):
     """
     acqs: /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tk_scripts/s56_acqs.lst
     """
