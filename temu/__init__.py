@@ -141,9 +141,9 @@ def getpairsbatch(acqs, output, lpath, mpath, pos_path):
 @main.command()
 @click.option("--acqs",default="")
 @click.option("--output", help="where the script is saved ")
-@click.option("--lpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.option("--tif_path", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
 @click.option("--map_path",default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps")
-def previewbatch(acqs, output, lpath, map_path):
+def previewbatch(acqs, output, tif_path, map_path):
 
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
@@ -151,7 +151,7 @@ def previewbatch(acqs, output, lpath, map_path):
     txt_lst = []
     for acq in acqs:
         acq_label = acq.split("-")[0]
-        cmd = gen_cmd(os.path.join(lpath,acq), acq_label, False, False, False, False, True, False, None, 2, map_path)
+        cmd = gen_cmd(os.path.join(tif_path,acq), acq_label, False, False, False, False, True, False, None, 2, map_path)
         txt_lst.append("{} > {}/aligned/{}/{}_preview_size & read -t 420 ; kill $!;".format(cmd[:-1], map_path, acq_label, acq_label))
     with open(output,"w+") as f:
         f.write("".join(txt_lst))
