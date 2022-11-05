@@ -197,7 +197,7 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude, threshold):
 @click.option('--acqs', default="", required=True)
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
 @click.option('--threshold', default=0.85, type=float)
-@click.argument('--tif_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", str=str)
+@click.argument('--tif_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", type=str)
 @click.argument('--pos_path', default="/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2",type=str)
 def getgoodpairsbatch(acqs, map_path, threshold, tif_path, pos_path):
     """
