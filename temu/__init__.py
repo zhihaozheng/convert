@@ -269,6 +269,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 
 @main.command()
 @click.option('--img', default="", required=True)
+@click.option('--tif_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", required=True, type=str)
 @click.option('--output', default="", type=str, required=True)
 @click.option('--sbatch', default="", type=str)
 @click.option('--rst', default=False, is_flag=True, help="")
@@ -279,16 +280,16 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 @click.option('--apply_map_hres', default=False, is_flag=True)
 @click.option('--mpi', default=56, type=int, help="number of parallel processes for mpirun")
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
-def getscriptbatch(img, output, sbatch, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_path):
+def getscriptbatch(img, tif_path, output, sbatch, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_path):
     txt_lst = []
     # read the list
     with open(img,"r") as f:
         imgs=f.read().splitlines()
-        img_full_paths = ["/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2/" + i for i in imgs]
+        img_full_paths = [tif_path + "/" + i for i in imgs]
 
     acqs=[i.split("-")[0] for i in imgs]
     for i in range(len(acqs)):
-        size_f = "/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/aligned/" + acqs[i] + "/" + acqs[i] + "_preview_size"
+        size_f = map_path + "/aligned/" + acqs[i] + "/" + acqs[i] + "_preview_size"
         txt_lst.append(gen_cmd(img_full_paths[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
         print("get region " + acqs[i])
 
