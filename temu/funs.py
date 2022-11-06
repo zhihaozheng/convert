@@ -105,7 +105,7 @@ def get_preview_region(path="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
 
-def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85):
+def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85,threshold=0.75):
     '''
     # 220421 get_good_pairs change to picking high corr ones from summary_f
     acq_label: label for the section that will be attached to the pair list name
@@ -129,11 +129,11 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
 
     # try a two tiers thresholding of correlations
     if corr_threshold > 0:
-        corr_t1 = summary.query("CORRELATION>0.75").copy()
+        corr_t1 = summary.query("CORRELATION>@threshold").copy()
         corr_t1['mid']=corr_t1.apply(lambda x: 50<int(x["IMAGE"].split("_")[1])<300,axis=1)
         highcorr = corr_t1.query("CORRELATION>@corr_threshold | mid")[["IMAGE","REFERENCE"]]
     else:
-        corr_t1 = summary.query("CORRELATION>0.85").copy()
+        corr_t1 = summary.query("CORRELATION>@threshold").copy()
         highcorr = corr_t1[["IMAGE","REFERENCE"]]
 
 

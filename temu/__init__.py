@@ -162,8 +162,9 @@ def previewbatch(acqs, output, tif_path, map_path):
 @click.argument("pos_path")
 @click.argument("save_path")
 @click.option('--exclude', type=str, default="", help="path to a file containing a lst of tiles to exclude", show_default=True)
-@click.option('--threshold', default=0.85, type=float)
-def getgoodpairs(acq,tile_path,pos_path,save_path,exclude, threshold):
+@click.option('--corr_threshold', default=0, type=float)
+@click.option('--threshold', default=0.75, type=float)
+def getgoodpairs(acq,tile_path,pos_path,save_path,exclude, corr_threshold, threshold):
     '''
     acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
@@ -191,7 +192,7 @@ def getgoodpairs(acq,tile_path,pos_path,save_path,exclude, threshold):
         with open(exclude,"r") as f:
             exclude=f.read().splitlines()
 
-    get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=threshold)
+    get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=corr_threshold,threshold=threshold)
 
 @main.command()
 @click.option('--acqs', default="", required=True)
