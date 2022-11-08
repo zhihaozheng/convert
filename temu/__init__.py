@@ -332,7 +332,7 @@ def getscriptbatch(img, tif_path, output, sbatch, rst, register, align, imap, ap
 @click.option('--acqs', default="", required=True)
 @click.option('--np', default="", required=True)
 @click.option('--output', default="print", required=True)
-@click.option('--zdelta',default=1300,type=float)
+@click.option('--zdelta',default=1300,type=int)
 def getuploadbatch(acqs, np, output, zdelta):
     with open(acqs,"r") as f:
         aqs=f.read().splitlines()
