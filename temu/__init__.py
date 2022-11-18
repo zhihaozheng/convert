@@ -336,8 +336,8 @@ def getscriptbatch(img, tif_path, output, sbatch, rst, register, align, imap, ap
 def getuploadbatch(acqs, np, output, zdelta):
     with open(acqs,"r") as f:
         aqs=f.read().splitlines()
-        aqs=[i[:4] for i in aqs]
-        nums=[zdelta+int(i[1:4]) for i in aqs]
+        aqs=[i[:i.find("-")] for i in aqs]
+        nums=[zdelta+int(i[1:i.find("-")]) for i in aqs]
     txt_lst = []
     for i in range(len(aqs)):
         txt_lst.append("tem2ng -p {p} upload {aq}/imap/ tigerdata://sseung-test1/ca3-alignment-temp/full_section_imap4/ --z {z} --pad 122880;".format(p=np,aq=aqs[i],z=nums[i]))
