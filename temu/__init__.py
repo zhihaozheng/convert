@@ -305,6 +305,8 @@ def getscriptbatch(img, tif_path, output, sbatch, rst, register, align, imap, ap
             ops = "rst_reg"
         elif align:
             ops = "align"
+        elif imap:
+            ops = "imap"
         else:
             ops = "highres"
 
