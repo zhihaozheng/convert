@@ -43,9 +43,9 @@ def get_pair_list_pix(subt):
                              "-".join(tile_pair))
     return pair_list
 
-def get_subtile_loc(pos_path, tile_path):
+def get_subtile_loc(pos_path, tile_path, stage_step=44395):
     sp = pd.read_csv(pos_path, skipinitialspace=True)
-    delta = 42795
+    delta = stage_step
     # blade2 step: step = 44395.385
     # blade1 step: step = 42795
     x_min = min(sp.stage_x_nm)
@@ -105,7 +105,7 @@ def get_preview_region(path="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
 
-def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85,threshold=0.75):
+def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85,threshold=0.75,stage_step=44395):
     '''
     # 220421 get_good_pairs change to picking high corr ones from summary_f
     acq_label: label for the section that will be attached to the pair list name
@@ -143,7 +143,7 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
     align_image_list = []
 
     # pos_path = os.path.join(data_path,acq_name,"metadata","stage_positions.csv")
-    subt = get_subtile_loc(pos_path, tile_path)
+    subt = get_subtile_loc(pos_path, tile_path, stage_step)
     pair_list = get_pair_list_pix(subt)
     for pair in pair_list:
         ps_list = [pair.split(" ")[0],pair.split(" ")[5]]
@@ -180,14 +180,14 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
         f.write("\n".join(core_images))
     print("pairs_images_lst saved for " + acq_label)
 
-def get_pairs(acq_label,tile_path,pos_path,save_path):
+def get_pairs(acq_label,tile_path,pos_path,save_path,stage_step):
     '''
     acq_label: label for the section that will be attached to the pair list name
     tile_path: path to the tiles that will be stitched
     pos_path: path to the stage_position.csv (stage_positions.csv)
     save_path: path to where the pair_list and image_list will save to
     '''
-    subt = get_subtile_loc(pos_path, tile_path)
+    subt = get_subtile_loc(pos_path, tile_path, stage_step)
     pair_list = get_pair_list_pix(subt)
 
     with open(os.path.join(save_path,acq_label + "_pairs.lst"),"w") as f:
