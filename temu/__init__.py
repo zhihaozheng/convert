@@ -201,10 +201,11 @@ def getgoodpairs(acq, tile_path, pos_path, save_path, exclude, corr_threshold, t
 @click.option('--acqs', default="", required=True)
 @click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
 @click.option('--threshold', default=0.85, type=float)
+@click.option('--corr_threshold', default=0, type=float)
 @click.option('--tile_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", type=str)
 @click.option('--pos_path', default="/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2",type=str)
 @click.option("--stage_step",default=44395,type=int)
-def getgoodpairsbatch(acqs, map_path, threshold, tile_path, pos_path, stage_step):
+def getgoodpairsbatch(acqs, map_path, threshold, corr_threshold, tile_path, pos_path, stage_step):
     """
     acqs: /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tk_scripts/s56_acqs.lst
     """
@@ -221,7 +222,7 @@ def getgoodpairsbatch(acqs, map_path, threshold, tile_path, pos_path, stage_step
         summary_f=os.path.join(map_path,"maps",acq_label,"summary.out")
         p_path = pos_path + "/" + acq + "_stage_positions.csv"
         tpath = tile_path + "/" + acq
-        get_good_pairs(acq_label,summary_f,tpath,p_path,lst_save_path,exclude=[],fname="core",corr_threshold=threshold, stage_step=stage_step)
+        get_good_pairs(acq_label,summary_f,tpath,p_path,lst_save_path,exclude=[],fname="core",corr_threshold=corr_threshold,threshold=threshold,stage_step=stage_step)
 
 
 
