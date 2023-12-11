@@ -321,7 +321,7 @@ def getscriptbatch(acqs, tile_dir, output, sbatch, rst, register, align, imap, a
             ops = "highres"
 
         sb_lst = []
-        with open(map_dir, sbatch,"r") as f:
+        with open(os.path.join(map_dir, sbatch),"r") as f:
             temp=f.read()
             for i in range(0, len(acqs), 2):
                 fname = acqs[i] + "_more_" + ops + ".sh"
