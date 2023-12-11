@@ -209,7 +209,7 @@ def getgoodpairs(map_dir, acq, tile_dir, pos_dir, exclude, corr_threshold, thres
 @click.option('--corr_threshold', default=0, type=float)
 @click.option('--tile_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", type=str)
 @click.option("--stage_step",default=44395,type=int)
-def getgoodpairsbatch(map_dir, acqs, map_path, threshold, corr_threshold, tile_path, pos_path, stage_step):
+def getgoodpairsbatch(map_dir, acqs, threshold, corr_threshold, tile_dir, stage_step):
     """
     acqs: /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tk_scripts/s56_acqs.lst
     """
