@@ -281,10 +281,10 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
         f.write(sb + txt)
 
 @main.command()
-@click.option('--img', default="", required=True)
-@click.option('--tif_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", required=True, type=str)
-@click.option('--output', default="", type=str, required=True)
-@click.option('--sbatch', default="", type=str)
+@click.option('--acqs', default="", required=True)
+@click.option('--tile_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", required=True, type=str)
+@click.option('--output', default="", help="sud_dir of map_dir", type=str, required=True)
+@click.option('--sbatch', default="", help="sud_dir of map_dir", type=str)
 @click.option('--rst', default=False, is_flag=True, help="")
 @click.option('--register', default=False, is_flag=True, help="")
 @click.option('--align', default=False, is_flag=True, help="")
@@ -292,24 +292,24 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 @click.option('--apply_map_red', default=False, is_flag=True)
 @click.option('--apply_map_hres', default=False, is_flag=True)
 @click.option('--mpi', default=56, type=int, help="number of parallel processes for mpirun")
-@click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
-def getscriptbatch(img, tif_path, output, sbatch, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_path):
+@click.option('--map_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
+def getscriptbatch(acqs, tile_dir, output, sbatch, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_dir):
     txt_lst = []
     # read the list
-    with open(img,"r") as f:
+    with open(acqs,"r") as f:
         imgs=f.read().splitlines()
-        img_full_paths = [tif_path + "/" + i for i in imgs]
+        img_full_paths = [tile_dir + "/" + i for i in imgs]
 
     acqs=[i.split("-")[0] for i in imgs]
     for i in range(len(acqs)):
-        size_f = map_path + "/aligned/" + acqs[i] + "/" + acqs[i] + "_preview_size"
-        txt_lst.append(gen_cmd(img_full_paths[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_path))
+        size_f = map_dir + "/aligned/" + acqs[i] + "/" + acqs[i] + "_preview_size"
+        txt_lst.append(gen_cmd(img_full_paths[i], acqs[i], rst, register, align, imap, apply_map_red, apply_map_hres, size_f, mpi, map_dir))
         print("get region " + acqs[i])
 
     if len(sbatch) > 0:
         # sbatch = "/home/voxa/scripts/stitch/stitching/220409_stitch_full_section/sbatch_rst_reg_template.sh"
-        # sbatch will be a directory pointing to the template file
-        # output should then be a directory where the sbatch scripts will be saved to
+        # sbatch will point to the template file, under map_dir
+        # output should then be a directory where the sbatch scripts will be saved to, subdirectory of map_dir
         # default save into 5 sections each sbatch script
         if rst:
             ops = "rst_reg"
@@ -321,7 +321,7 @@ def getscriptbatch(img, tif_path, output, sbatch, rst, register, align, imap, ap
             ops = "highres"
 
         sb_lst = []
-        with open(sbatch,"r") as f:
+        with open(map_dir, sbatch,"r") as f:
             temp=f.read()
             for i in range(0, len(acqs), 2):
                 fname = acqs[i] + "_more_" + ops + ".sh"
@@ -329,15 +329,15 @@ def getscriptbatch(img, tif_path, output, sbatch, rst, register, align, imap, ap
                 j1 = t1.find("name=") + 5
                 t1 = t1[:j1] + acqs[i] + t1[j1+1:]
                 sb_lst.append("sbatch " + fname + ";")
-                with open(os.path.join(output,fname),"w+") as wf:
+                with open(os.path.join(map_dir, output,fname),"w+") as wf:
                     wf.write(t1)
                 print(fname + "is saved")
-        with open(os.path.join(output,"sbatchs"),"w+") as sbf:
+        with open(os.path.join(map_dir, output,"sbatchs"),"w+") as sbf:
             sbf.write("".join(sb_lst))
     else:
         # if sbatch is not supplied, save the commands to a single text file
         txt = "".join(txt_lst)
-        with open(output,"w+") as f:
+        with open(map_dir, output,"w+") as f:
             f.write(txt)
 
 @main.command()
