@@ -146,7 +146,7 @@ def getpairsbatch(map_dir, acqs, tile_dir, pos_dir, stage_step):
 @click.option("--map_dir",default="/scratch/zhihaozheng/mec/mec_stitch/reel1068_blade2_maps",required=True)
 @click.option("--acqs",default="")
 @click.option("--output", help="where the script is saved ")
-@click.option("--tile_dir", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.option("--tile_dir", default="/scratch/zhihaozheng/mec/tiff_sections/reel1068_blade2")
 def previewbatch(map_dir, acqs, output, tile_dir):
 
     with open(acqs,"r") as f:
@@ -292,7 +292,7 @@ def getscript(img, acq, output, rst, register, align, imap, apply_map_red, apply
 @click.option('--apply_map_red', default=False, is_flag=True)
 @click.option('--apply_map_hres', default=False, is_flag=True)
 @click.option('--mpi', default=56, type=int, help="number of parallel processes for mpirun")
-@click.option('--map_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", type=str)
+@click.option('--map_dir', default="/scratch/zhihaozheng/mec/mec_stitch/reel1068_blade2_maps", type=str)
 def getscriptbatch(acqs, tile_dir, output, sbatch, rst, register, align, imap, apply_map_red, apply_map_hres, mpi, map_dir):
     txt_lst = []
     # read the list
