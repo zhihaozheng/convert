@@ -110,42 +110,44 @@ def getdownloads(acqs,mpi,cpath,lpath,output):
         f.write("".join(txt_lst))
 
 @main.command()
+@click.option("--map_dir",default="/scratch/zhihaozheng/mec/mec_stitch/reel1068_blade2_maps",required=True)
 @click.option("--acq")
-@click.option("--tile_path")
-@click.option("--pos_path")
-@click.option("--save_path")
+@click.option("--tile_dir")
+@click.option("--pos_dir")
 @click.option("--stage_step",default=44395,type=int)
-def getpairs(acq,tile_path,pos_path,save_path,stage_step):
+def getpairs(map_dir,acq,tile_dir,pos_dir,stage_step):
     """
     pos_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36/metadata/stage_positions.csv
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
     save_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_maps/lst
     """
-    get_pairs(acq,tile_path,pos_path,save_path,stage_step)
+    save_path = map_dir + "/" + "lst"
+    get_pairs(acq,tile_dir,pos_dir,save_path,stage_step)
 
 @main.command()
-@click.option('--acqs', default="", required=True)
-@click.option("--tile_path", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
-@click.option("--mpath", default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst")
-@click.option("--pos_path",default="/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2")
+@click.option("--map_dir",default="/scratch/zhihaozheng/mec/mec_stitch/reel1068_blade2_maps",required=True)
+@click.option('--acqs', default="",required=True)
+@click.option("--tile_dir", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+@click.option("--pos_dir",default="stage_positions")
 @click.option("--stage_step",default=44395,type=int)
-def getpairsbatch(acqs, tile_path, mpath, pos_path, stage_step):
+def getpairsbatch(map_dir, acqs, tile_dir, pos_dir, stage_step):
     '''
     temu getpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps/lst
     '''
+    mpath = map_dir + "/" "lst"
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
     for acq in acqs:
         acq_num = acq.split("-")[0]
-        get_pairs(acq_num, tile_path + "/" + acq, pos_path + "/" + acq + "_stage_positions.csv", mpath, stage_step)
+        get_pairs(acq_num, tile_dir + "/" + acq, map_dir + "/" + pos_dir + "/" + acq + "_stage_positions.csv", mpath, stage_step)
         print(acq_num + " is done")
 
 @main.command()
+@click.option("--map_dir",default="/scratch/zhihaozheng/mec/mec_stitch/reel1068_blade2_maps",required=True)
 @click.option("--acqs",default="")
 @click.option("--output", help="where the script is saved ")
-@click.option("--tile_path", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
-@click.option("--map_path",default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps")
-def previewbatch(acqs, output, tile_path, map_path):
+@click.option("--tile_dir", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
+def previewbatch(map_dir, acqs, output, tile_dir):
 
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
@@ -153,21 +155,21 @@ def previewbatch(acqs, output, tile_path, map_path):
     txt_lst = []
     for acq in acqs:
         acq_label = acq.split("-")[0]
-        cmd = gen_cmd(os.path.join(tile_path,acq), acq_label, False, False, False, False, True, False, None, 2, map_path)
-        txt_lst.append("{} > {}/aligned/{}/{}_preview_size & read -t 920 ; kill $!;".format(cmd[:-1], map_path, acq_label, acq_label))
+        cmd = gen_cmd(os.path.join(tile_dir,acq), acq_label, False, False, False, False, True, False, None, 2, map_dir)
+        txt_lst.append("{} > {}/aligned/{}/{}_preview_size & read -t 920 ; kill $!;".format(cmd[:-1], map_dir, acq_label, acq_label))
     with open(output,"w+") as f:
         f.write("".join(txt_lst))
 
 @main.command()
+@click.option("--map_dir",default="/scratch/zhihaozheng/mec/mec_stitch/reel1068_blade2_maps",required=True)
 @click.option("--acq")
-@click.option("--tile_path")
-@click.option("--pos_path")
-@click.option("--save_path")
+@click.option("--tile_dir")
+@click.option("--pos_dir", default=None)
 @click.option('--exclude', type=str, default="", help="path to a file containing a lst of tiles to exclude", show_default=True)
 @click.option('--corr_threshold', default=0, type=float)
 @click.option('--threshold', default=0.75, type=float)
 @click.option("--stage_step",default=44395,type=int)
-def getgoodpairs(acq, tile_path, pos_path, save_path, exclude, corr_threshold, threshold, stage_step):
+def getgoodpairs(map_dir, acq, tile_dir, pos_dir, exclude, corr_threshold, threshold, stage_step):
     '''
     acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
@@ -185,27 +187,29 @@ def getgoodpairs(acq, tile_path, pos_path, save_path, exclude, corr_threshold, t
     pos_path = "/media/voxa/WD_23/zhihao/ca3/tape3_blade2/211208/bladeseq-2021.12.07-23.46.41/s042-2021.12.07-23.46.41/metadata/stage_positions.csv"
     save_path = "/media/voxa/WD_36/zhihao/ca3/tape3_blade2_maps/lst/"
     '''
+    if pos_dir is None:
+        pos_dir = map_dir + "/" + "stage_pos" + "/" + acq + "_stage_positions.csv"
     # pos_path = os.path.join(acq_path,"metadata","stage_positions.csv")
     # acq = acq_path.split("/")[-1].split("-")[0]
-    summary_f=os.path.join(save_path,"maps",acq,"summary.out")
-    lst_save_path = os.path.join(save_path,"lst")
+    summary_f=os.path.join(map_dir,"maps",acq,"summary.out")
+    lst_save_path = os.path.join(map_dir,"lst")
     if len(exclude)==0:
         exclude=[]
     else:
         with open(exclude,"r") as f:
             exclude=f.read().splitlines()
 
-    get_good_pairs(acq,summary_f,tile_path,pos_path,lst_save_path,exclude,fname="core",corr_threshold=corr_threshold,threshold=threshold,stage_step=stage_step)
+    get_good_pairs(acq,summary_f,tile_dir,pos_dir,lst_save_path,exclude,
+                fname="core",corr_threshold=corr_threshold,threshold=threshold,stage_step=stage_step)
 
 @main.command()
+@click.option('--map_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
 @click.option('--acqs', default="", required=True)
-@click.option('--map_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
 @click.option('--threshold', default=0.85, type=float)
 @click.option('--corr_threshold', default=0, type=float)
-@click.option('--tile_path', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", type=str)
-@click.option('--pos_path', default="/mnt/sink/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2",type=str)
+@click.option('--tile_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", type=str)
 @click.option("--stage_step",default=44395,type=int)
-def getgoodpairsbatch(acqs, map_path, threshold, corr_threshold, tile_path, pos_path, stage_step):
+def getgoodpairsbatch(map_dir, acqs, map_path, threshold, corr_threshold, tile_path, pos_path, stage_step):
     """
     acqs: /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tk_scripts/s56_acqs.lst
     """
@@ -215,14 +219,15 @@ def getgoodpairsbatch(acqs, map_path, threshold, corr_threshold, tile_path, pos_
     # temu getgoodpairs s074 /mnt/scratch/zhihaozheng/ca3/tif/tape3_blade2/s074-2021.12.09-12.07.23 /mnt/scratch/zhihaozheng/ca3/stage_positions/tape3_blade2/s074-2021.12.09-12.07.23_stage_positions.csv /mnt/scratch/zhihaozheng/ca3/tape3_blade2_maps;
     with open(acqs,"r") as f:
         acqs=f.read().splitlines()
-    lst_save_path = map_path + "/lst"
+    lst_save_path = map_dir + "/lst"
 
     for acq in acqs:
         acq_label = acq.split("-")[0]
-        summary_f=os.path.join(map_path,"maps",acq_label,"summary.out")
-        p_path = pos_path + "/" + acq + "_stage_positions.csv"
-        tpath = tile_path + "/" + acq
-        get_good_pairs(acq_label,summary_f,tpath,p_path,lst_save_path,exclude=[],fname="core",corr_threshold=corr_threshold,threshold=threshold,stage_step=stage_step)
+        summary_f=os.path.join(map_dir,"maps",acq_label,"summary.out")
+        p_path = map_dir + "/stage_pos/" + acq + "_stage_positions.csv"
+        tpath = tile_dir + "/" + acq
+        get_good_pairs(acq_label,summary_f,tpath,p_path,lst_save_path,exclude=[],
+            fname="core",corr_threshold=corr_threshold,threshold=threshold,stage_step=stage_step)
 
 
 
