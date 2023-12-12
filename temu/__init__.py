@@ -128,7 +128,7 @@ def getpairs(map_dir,acq,tile_dir,pos_dir,stage_step):
 @click.option("--map_dir",default="/scratch/zhihaozheng/mec/mec_stitch/reel1068_blade2_maps",required=True)
 @click.option('--acqs', default="",required=True)
 @click.option("--tile_dir", default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2")
-@click.option("--pos_dir",default="stage_positions")
+@click.option("--pos_dir",default="stage_pos")
 @click.option("--stage_step",default=44395,type=int)
 def getpairsbatch(map_dir, acqs, tile_dir, pos_dir, stage_step):
     '''
