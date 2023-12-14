@@ -30,7 +30,7 @@ def get_pair_list_pix(subt):
         for pair in cl:
             t1 = xt.query("yis in @pair").copy()
             tile_pair = t1.sort_values(by ="yis")["fname"].tolist()
-            pair_list.append(tile_pair[0] + " 0 5999 3500 5999 " + tile_pair[1] + " 0 5999 0 2500 " +
+            pair_list.append(tile_pair[0] + " 0 2999 1700 2999 " + tile_pair[1] + " 0 2999 0 1250 " +
                              "-".join(tile_pair))
 
     for yi in pd.unique(subt.yis):
@@ -39,7 +39,7 @@ def get_pair_list_pix(subt):
         for pair in cl:
             t1 = yt.query("xis in @pair").copy()
             tile_pair = t1.sort_values(by ="xis")["fname"].tolist()
-            pair_list.append(tile_pair[0] + " 3500 5999 0 5999 " + tile_pair[1] + " 0 2500 0 5999 " +
+            pair_list.append(tile_pair[0] + " 1700 2999 0 2999 " + tile_pair[1] + " 0 1250 0 2999 " +
                              "-".join(tile_pair))
     return pair_list
 
