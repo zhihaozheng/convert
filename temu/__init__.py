@@ -49,6 +49,7 @@ def totif(ctx, source, destination):
 
     def process(filename):
         img = cv2.imread(os.path.join(tile_path,filename),cv2.IMREAD_GRAYSCALE)
+        img = cv2.pyrDown(img)
         cv2.imwrite(os.path.join(target_path, filename.replace("bmp","tif")), img)
         return 1
 
