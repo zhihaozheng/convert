@@ -170,7 +170,10 @@ def previewbatch(map_dir, acqs, output, tile_dir):
 @click.option('--corr_threshold', default=0, type=float)
 @click.option('--threshold', default=0.75, type=float)
 @click.option("--stage_step",default=44395,type=int)
-def getgoodpairs(map_dir, acq, tile_dir, pos_dir, exclude, corr_threshold, threshold, stage_step):
+@click.option("--all_edges", default=False, is_flag=True)
+def getgoodpairs(map_dir, acq, tile_dir, pos_dir, 
+                 exclude, corr_threshold, threshold, stage_step,
+                 all_edges):
     '''
     acq_path: e.g. /media/voxa/WD_23/zhihao/ca3/tape3_blade2/211222/bladeseq-2021.12.24-14.55.36/s108-2021.12.24-14.55.36
     tile_path: e.g. /media/voxa/WD_36/zhihao/ca3/tape3_blade2_tif/s108-2021.12.24-14.55.36
@@ -201,7 +204,8 @@ def getgoodpairs(map_dir, acq, tile_dir, pos_dir, exclude, corr_threshold, thres
             exclude=f.read().splitlines()
 
     get_good_pairs(acq,summary_f,tile_dir,pos_dir,lst_save_path,exclude,
-                fname="core",corr_threshold=corr_threshold,threshold=threshold,stage_step=stage_step)
+                fname="core",corr_threshold=corr_threshold,
+                threshold=threshold,stage_step=stage_step,all_edges=all_edges)
 
 @main.command()
 @click.option('--map_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps", required=True)
@@ -210,7 +214,9 @@ def getgoodpairs(map_dir, acq, tile_dir, pos_dir, exclude, corr_threshold, thres
 @click.option('--corr_threshold', default=0, type=float)
 @click.option('--tile_dir', default="/mnt/sink/scratch/zhihaozheng/ca3/tif/tape3_blade2", type=str)
 @click.option("--stage_step",default=44395,type=int)
-def getgoodpairsbatch(map_dir, acqs, threshold, corr_threshold, tile_dir, stage_step):
+@click.option("--all_edges",default=False, is_flag=True)
+def getgoodpairsbatch(map_dir, acqs, threshold, corr_threshold, 
+                      tile_dir, stage_step, all_edges):
     """
     acqs: /home/voxa/scripts/stitch/stitching/220409_stitch_full_section/tk_scripts/s56_acqs.lst
     """
@@ -228,7 +234,8 @@ def getgoodpairsbatch(map_dir, acqs, threshold, corr_threshold, tile_dir, stage_
         p_path = map_dir + "/stage_pos/" + acq + "_stage_positions.csv"
         tpath = tile_dir + "/" + acq
         get_good_pairs(acq_label,summary_f,tpath,p_path,lst_save_path,exclude=[],
-            fname="core",corr_threshold=corr_threshold,threshold=threshold,stage_step=stage_step)
+            fname="core",corr_threshold=corr_threshold,
+            threshold=threshold,stage_step=stage_step, all_edges=all_edges)
 
 
 

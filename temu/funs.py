@@ -105,7 +105,9 @@ def get_preview_region(path="/mnt/sink/scratch/zhihaozheng/ca3/tape3_blade2_maps
     return '{}x{}-{}-{}'.format(wid,hei,x1,y1)
 
 
-def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],fname="core",corr_threshold=0.85,threshold=0.75,stage_step=44395):
+def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,
+                   exclude=[],fname="core",corr_threshold=0.85,
+                   threshold=0.75,stage_step=44395,all_edges=True):
     '''
     # 220421 get_good_pairs change to picking high corr ones from summary_f
     acq_label: label for the section that will be attached to the pair list name
@@ -164,13 +166,14 @@ def get_good_pairs(acq_label,summary_f,tile_path,pos_path,save_path,exclude=[],f
     core_images = [i for i in align_image_list if i not in fls]
 
     # 221002 add all pairs between core_iamges
-    core_pair_set = [set((i.split(" ")[0],i.split(" ")[5])) for i in core_align_pairs]
-    for pair in pair_list:
-        ps_list = [pair.split(" ")[0],pair.split(" ")[5]]
-        ps = set(ps_list)
-        if ps not in core_pair_set:
-            if ps_list[0] in core_images and ps_list[1] in core_images:
-                core_align_pairs.append(pair)
+    if all_edges:
+        core_pair_set = [set((i.split(" ")[0],i.split(" ")[5])) for i in core_align_pairs]
+        for pair in pair_list:
+            ps_list = [pair.split(" ")[0],pair.split(" ")[5]]
+            ps = set(ps_list)
+            if ps not in core_pair_set:
+                if ps_list[0] in core_images and ps_list[1] in core_images:
+                    core_align_pairs.append(pair)
 
     with open(os.path.join(save_path,acq_label + "_" + fname + "_pairs.lst"),"w") as f:
         f.write("\n".join(core_align_pairs))
